@@ -16,7 +16,7 @@ public class Movie {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private long id;
 
   private String title;
   private String genre;
@@ -38,7 +38,11 @@ public class Movie {
   @Temporal(TemporalType.TIMESTAMP)
   private java.util.Date closing_day;
 
-  @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+  @OneToMany(
+    fetch = FetchType.EAGER,
+    mappedBy = "movie",
+    cascade = CascadeType.ALL
+  )
   @JsonIgnore
   private Collection<Schedule> schedules;
 }

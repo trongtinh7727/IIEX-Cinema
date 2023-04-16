@@ -26,14 +26,20 @@ public class MovieController {
         CustomResponse<Movie> response = new CustomResponse(true, movies);
         return ResponseEntity.ok(response);
     }
-
     @PostMapping("")
     Movie newMovie(@RequestBody Movie newMovie) {
         return movieService.saveMovie(newMovie);
     }
-
-    @GetMapping("/employees/{id}")
+    @GetMapping("/{id}")
     Movie one(@PathVariable Long id) {
         return movieService.finMovieByID(id);
     }
+
+    @PutMapping("/{id}")
+    Movie update(@PathVariable Movie movie){
+        Movie oldMovie = movieService.finMovieByID(movie.getId());
+        return movieService.saveMovie(oldMovie);
+    }
+    @DeleteMapping("/{id}")
+    void delete(@PathVariable Long id){ movieService.delete(id);}
 }

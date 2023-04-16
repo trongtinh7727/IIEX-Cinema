@@ -39,5 +39,4 @@ public class Schedule {
     @JsonIgnore
     private  Collection<Ticket> tickets;
 
-
 }

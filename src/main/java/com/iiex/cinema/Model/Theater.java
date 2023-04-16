@@ -16,7 +16,7 @@ import java.util.Collection;
 public class Theater {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    long id;
     private int theaterNumber;
     private int seatCount;
     private int isShowing;

@@ -5,6 +5,8 @@ import com.iiex.cinema.Repository.MovieRepository;
 import com.iiex.cinema.Service.MovieService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,5 +29,10 @@ public class MovieServiceImpl implements MovieService {
   public Movie saveMovie(Movie movie) {
     movieRepository.save(movie);
     return movie;
+  }
+
+  @Override
+  public void delete(Long ID) {
+    movieRepository.deleteById(ID);
   }
 }
