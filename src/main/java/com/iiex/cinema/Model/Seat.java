@@ -1,5 +1,6 @@
 package com.iiex.cinema.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +24,6 @@ public class Seat {
     private Theater theater;
 
     @OneToMany(mappedBy = "seat")
+    @JsonIgnore
     private Collection<Ticket> tickets;
 }
