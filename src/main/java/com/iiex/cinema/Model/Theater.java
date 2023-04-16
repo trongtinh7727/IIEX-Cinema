@@ -20,11 +20,10 @@ public class Theater {
     private int seatCount;
     private int isShowing;
 
-    @ManyToOne
-    @JoinColumn(name = "CINEMA_ID")
-    private Cinema cinema;
-
     @OneToMany(mappedBy = "theater",cascade = CascadeType.ALL)
     private Collection<Seat> seats;
+
+    @OneToMany(mappedBy = "theater",cascade = CascadeType.ALL)
+    private Collection<Schedule> schedules;
 
 }

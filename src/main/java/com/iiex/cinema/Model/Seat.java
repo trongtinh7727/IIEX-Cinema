@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,9 +16,12 @@ public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int seat_number;
-    private String seat_type;
+    private int seatNumber;
+    private String seatType;
     @ManyToOne
-    @JoinColumn(name = "the_id")
+    @JoinColumn(name = "theater_id")
     private Theater theater;
+
+    @OneToMany(mappedBy = "seat")
+    private Collection<Ticket> tickets;
 }

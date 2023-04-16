@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 11, 2023 at 07:21 PM
+-- Generation Time: Apr 16, 2023 at 04:43 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -21,6 +21,106 @@ SET time_zone = "+00:00";
 -- Database: `javacinema`
 --
 
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_schedule` (IN `p_theaterID` INT, IN `p_movieID` INT, IN `p_startTime` DATETIME, IN `p_endTime` DATETIME, IN `p_price` DOUBLE)   BEGIN	
+Select THEATER.seat_count Into @seatCount from THEATER where ID =  p_theaterID;
+	INSERT INTO `SCHEDULE`
+           (`THEATER_ID`
+           ,`MOVIE_ID`
+           ,`START_TIME`
+           ,`END_TIME`)
+     VALUES
+           (p_theaterID
+           ,p_movieID
+           ,p_startTime
+           ,p_endTime);
+
+    SELECT MIN(SEAT.ID) INTO @counter from SEAT JOIN THEATER ON THEATER.ID = SEAT.THEATER_ID 
+    WHERE THEATER.ID = p_theaterID
+    LIMIT 1;
+
+
+	SET @schedule_id = LAST_INSERT_ID();
+
+   SET @seatCount = @seatCount+@counter;
+
+		WHILE @counter < @seatCount
+	DO
+		-- SQLINES LICENSE FOR EVALUATION USE ONLY
+		INSERT INTO `TICKET`
+           (`BOOKING_ID`
+           ,`PRICE`
+           ,`schedule_id`
+           ,`seat_id`
+           ,`booked`)
+		VALUES
+           (null
+           ,p_price
+           ,@schedule_id
+           ,@counter
+           ,0);
+		SET @ticket_id  = LAST_INSERT_ID();
+
+		SET @counter = @counter + 1;
+	END WHILE;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_theater` (IN `theater_num` INT, IN `seat_count` INT)   BEGIN
+  -- Tạo rạp chiếu phim mới
+  INSERT INTO `theater` (`THEATER_NUMBER`, `SEAT_COUNT`, `IS_SHOWING`)
+  VALUES (theater_num, seat_count, 0);
+
+  -- Lấy ID của rạp chiếu phim mới
+  SET @theater_id = LAST_INSERT_ID();
+
+  -- Tạo các ghế Standard trong rạp chiếu phim
+  SET @Standard_count = FLOOR(seat_count / 3);
+  SET @Standard_count = @Standard_count + @Standard_count;
+  SET @seat_num = 1;
+  WHILE @seat_num <= @Standard_count DO
+    INSERT INTO `seat` (`THEATER_ID`, `SEAT_NUMBER`, `SEAT_TYPE`)
+    VALUES (@theater_id, @seat_num, 'Standard');
+    SET @seat_num = @seat_num + 1;
+  END WHILE;
+
+  -- Tạo các ghế Couple trong rạp chiếu phim
+  SET @couple_count = FLOOR(seat_count / 3);
+  SET @couple_seat_num = seat_count - @couple_count + 1;
+  WHILE @couple_seat_num <= seat_count DO
+    INSERT INTO `seat` (`THEATER_ID`, `SEAT_NUMBER`, `SEAT_TYPE`)
+    VALUES (@theater_id, @couple_seat_num, 'Couple');
+    SET @couple_seat_num = @couple_seat_num + 1;
+  END WHILE;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_schedule_by_theater` (IN `theater_id` INT)   SELECT movie.TITLE, movie.DURATION,schedule.* ,  theater.SEATCOUNT, COUNT(ticket_seat_schedule.TICKET_ID) AS EMPTYSEAT
+FROM schedule, theater, ticket_seat_schedule, movie
+WHERE schedule.THEA_ID = theater.ID
+AND schedule.ID = ticket_seat_schedule.SCHEDULE_ID
+AND movie.ID = schedule.MOVIE_ID
+AND ticket_seat_schedule.BOOKED  = 0
+AND theater.ID = theater_id
+GROUP BY schedule.ID$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_schedule_today` ()   SELECT schedule.ID,movie.ID as MID, movie.TITLE, movie.POSTER, movie.STORY, GROUP_CONCAT(TIME(schedule.STARTTIME)) AS TIME, DATE(schedule.STARTTIME) as DAY FROM schedule JOIN movie ON movie.ID = schedule.MOVIE_ID WHERE now()< schedule.STARTTIME AND DATE(now()) = DATE(schedule.STARTTIME) GROUP BY MID$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_trailers` ()   SELECT id, trailer FROM movie WHERE LENGTH(trailer) > 1 LIMIT 10$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `isValidSchedule` (IN `stime` DATETIME, IN `theater_num` INT)   SELECT * FROM `schedule` 
+WHERE stime BETWEEN STARTTIME AND ENDTIME 
+AND theater_ID = theater_num$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ongoing_movies` ()   SELECT * FROM movie
+WHERE CURDATE() BETWEEN OPENING_DAY AND CLOSING_DAY
+ORDER by OPENING_DAY ASC$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `upcoming_movies` ()   SELECT * FROM movie WHERE opening_day > CURDATE() ORDER BY opening_day ASC LIMIT 10$$
+
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -32,33 +132,6 @@ CREATE TABLE `booking` (
   `USER_ID` int(11) DEFAULT NULL,
   `CREATED_AT` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `booking`
---
-
-INSERT INTO `booking` (`ID`, `USER_ID`, `CREATED_AT`) VALUES
-(1, 1, '2023-04-04 15:23:50');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cinema`
---
-
-CREATE TABLE `cinema` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(50) DEFAULT NULL,
-  `ADDRESS` varchar(50) DEFAULT NULL,
-  `PHONE` char(15) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `cinema`
---
-
-INSERT INTO `cinema` (`ID`, `NAME`, `ADDRESS`, `PHONE`) VALUES
-(1, 'Lotte Cinema Q7', 'Q7, Thành phố Hồ Chí minh', '0843206397');
 
 -- --------------------------------------------------------
 
@@ -197,10 +270,18 @@ INSERT INTO `role` (`ID`, `NAME`) VALUES
 CREATE TABLE `schedule` (
   `ID` int(11) NOT NULL,
   `MOVIE_ID` int(11) NOT NULL,
-  `STARTTIME` datetime DEFAULT NULL,
-  `ENDTIME` datetime DEFAULT NULL,
+  `start_time` datetime DEFAULT NULL,
+  `end_time` datetime DEFAULT NULL,
   `THEATER_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `schedule`
+--
+
+INSERT INTO `schedule` (`ID`, `MOVIE_ID`, `start_time`, `end_time`, `THEATER_ID`) VALUES
+(2, 25, '2023-04-13 16:40:00', '2023-04-13 18:28:00', 2),
+(3, 25, '2023-04-13 16:40:00', '2023-04-13 18:28:00', 2);
 
 -- --------------------------------------------------------
 
@@ -211,9 +292,75 @@ CREATE TABLE `schedule` (
 CREATE TABLE `seat` (
   `ID` int(11) NOT NULL,
   `THEATER_ID` int(11) NOT NULL,
-  `SEATNUMBER` int(11) DEFAULT NULL,
-  `SEATTYPE` varchar(20) DEFAULT NULL
+  `seat_number` int(11) NOT NULL,
+  `seat_type` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `seat`
+--
+
+INSERT INTO `seat` (`ID`, `THEATER_ID`, `seat_number`, `seat_type`) VALUES
+(81, 2, 1, 'Standard'),
+(82, 2, 2, 'Standard'),
+(83, 2, 3, 'Standard'),
+(84, 2, 4, 'Standard'),
+(85, 2, 5, 'Standard'),
+(86, 2, 6, 'Standard'),
+(87, 2, 7, 'Standard'),
+(88, 2, 8, 'Standard'),
+(89, 2, 9, 'Standard'),
+(90, 2, 10, 'Standard'),
+(91, 2, 11, 'Standard'),
+(92, 2, 12, 'Standard'),
+(93, 2, 13, 'Standard'),
+(94, 2, 14, 'Standard'),
+(95, 2, 15, 'Standard'),
+(96, 2, 16, 'Standard'),
+(97, 2, 17, 'Standard'),
+(98, 2, 18, 'Standard'),
+(99, 2, 19, 'Standard'),
+(100, 2, 20, 'Standard'),
+(101, 2, 21, 'Standard'),
+(102, 2, 22, 'Standard'),
+(103, 2, 23, 'Standard'),
+(104, 2, 24, 'Standard'),
+(105, 2, 25, 'Standard'),
+(106, 2, 26, 'Standard'),
+(107, 2, 27, 'Standard'),
+(108, 2, 28, 'Standard'),
+(109, 2, 29, 'Standard'),
+(110, 2, 30, 'Standard'),
+(111, 2, 31, 'Standard'),
+(112, 2, 32, 'Standard'),
+(113, 2, 33, 'Standard'),
+(114, 2, 34, 'Standard'),
+(115, 2, 35, 'Standard'),
+(116, 2, 36, 'Standard'),
+(117, 2, 37, 'Standard'),
+(118, 2, 38, 'Standard'),
+(119, 2, 39, 'Standard'),
+(120, 2, 40, 'Standard'),
+(121, 2, 41, 'Couple'),
+(122, 2, 42, 'Couple'),
+(123, 2, 43, 'Couple'),
+(124, 2, 44, 'Couple'),
+(125, 2, 45, 'Couple'),
+(126, 2, 46, 'Couple'),
+(127, 2, 47, 'Couple'),
+(128, 2, 48, 'Couple'),
+(129, 2, 49, 'Couple'),
+(130, 2, 50, 'Couple'),
+(131, 2, 51, 'Couple'),
+(132, 2, 52, 'Couple'),
+(133, 2, 53, 'Couple'),
+(134, 2, 54, 'Couple'),
+(135, 2, 55, 'Couple'),
+(136, 2, 56, 'Couple'),
+(137, 2, 57, 'Couple'),
+(138, 2, 58, 'Couple'),
+(139, 2, 59, 'Couple'),
+(140, 2, 60, 'Couple');
 
 -- --------------------------------------------------------
 
@@ -223,11 +370,18 @@ CREATE TABLE `seat` (
 
 CREATE TABLE `theater` (
   `ID` int(11) NOT NULL,
-  `CINEMA_ID` int(11) NOT NULL,
-  `THEATERNUMBER` int(11) DEFAULT NULL,
-  `SEATCOUNT` int(11) DEFAULT NULL,
-  `ISSHOWING` int(11) DEFAULT NULL
+  `theater_number` int(11) NOT NULL,
+  `seat_count` int(11) NOT NULL,
+  `is_showing` int(11) NOT NULL,
+  `CINEMA_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `theater`
+--
+
+INSERT INTO `theater` (`ID`, `theater_number`, `seat_count`, `is_showing`, `CINEMA_ID`) VALUES
+(2, 1, 60, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -237,22 +391,78 @@ CREATE TABLE `theater` (
 
 CREATE TABLE `ticket` (
   `ID` int(11) NOT NULL,
-  `BOOKING_ID` int(11) NOT NULL,
-  `PRICE` float NOT NULL
+  `BOOKING_ID` int(11) DEFAULT NULL,
+  `PRICE` float NOT NULL,
+  `schedule_id` int(11) DEFAULT NULL,
+  `seat_id` int(11) DEFAULT NULL,
+  `booked` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `ticket_seat_schedule`
+-- Dumping data for table `ticket`
 --
 
-CREATE TABLE `ticket_seat_schedule` (
-  `SEAT_ID` int(11) NOT NULL,
-  `SCHEDULE_ID` int(11) NOT NULL,
-  `TICKET_ID` int(11) NOT NULL,
-  `ISSHOWING` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `ticket` (`ID`, `BOOKING_ID`, `PRICE`, `schedule_id`, `seat_id`, `booked`) VALUES
+(1, NULL, 60000, 3, 81, 0),
+(2, NULL, 60000, 3, 82, 0),
+(3, NULL, 60000, 3, 83, 0),
+(4, NULL, 60000, 3, 84, 0),
+(5, NULL, 60000, 3, 85, 0),
+(6, NULL, 60000, 3, 86, 0),
+(7, NULL, 60000, 3, 87, 0),
+(8, NULL, 60000, 3, 88, 0),
+(9, NULL, 60000, 3, 89, 0),
+(10, NULL, 60000, 3, 90, 0),
+(11, NULL, 60000, 3, 91, 0),
+(12, NULL, 60000, 3, 92, 0),
+(13, NULL, 60000, 3, 93, 0),
+(14, NULL, 60000, 3, 94, 0),
+(15, NULL, 60000, 3, 95, 0),
+(16, NULL, 60000, 3, 96, 0),
+(17, NULL, 60000, 3, 97, 0),
+(18, NULL, 60000, 3, 98, 0),
+(19, NULL, 60000, 3, 99, 0),
+(20, NULL, 60000, 3, 100, 0),
+(21, NULL, 60000, 3, 101, 0),
+(22, NULL, 60000, 3, 102, 0),
+(23, NULL, 60000, 3, 103, 0),
+(24, NULL, 60000, 3, 104, 0),
+(25, NULL, 60000, 3, 105, 0),
+(26, NULL, 60000, 3, 106, 0),
+(27, NULL, 60000, 3, 107, 0),
+(28, NULL, 60000, 3, 108, 0),
+(29, NULL, 60000, 3, 109, 0),
+(30, NULL, 60000, 3, 110, 0),
+(31, NULL, 60000, 3, 111, 0),
+(32, NULL, 60000, 3, 112, 0),
+(33, NULL, 60000, 3, 113, 0),
+(34, NULL, 60000, 3, 114, 0),
+(35, NULL, 60000, 3, 115, 0),
+(36, NULL, 60000, 3, 116, 0),
+(37, NULL, 60000, 3, 117, 0),
+(38, NULL, 60000, 3, 118, 0),
+(39, NULL, 60000, 3, 119, 0),
+(40, NULL, 60000, 3, 120, 0),
+(41, NULL, 60000, 3, 121, 0),
+(42, NULL, 60000, 3, 122, 0),
+(43, NULL, 60000, 3, 123, 0),
+(44, NULL, 60000, 3, 124, 0),
+(45, NULL, 60000, 3, 125, 0),
+(46, NULL, 60000, 3, 126, 0),
+(47, NULL, 60000, 3, 127, 0),
+(48, NULL, 60000, 3, 128, 0),
+(49, NULL, 60000, 3, 129, 0),
+(50, NULL, 60000, 3, 130, 0),
+(51, NULL, 60000, 3, 131, 0),
+(52, NULL, 60000, 3, 132, 0),
+(53, NULL, 60000, 3, 133, 0),
+(54, NULL, 60000, 3, 134, 0),
+(55, NULL, 60000, 3, 135, 0),
+(56, NULL, 60000, 3, 136, 0),
+(57, NULL, 60000, 3, 137, 0),
+(58, NULL, 60000, 3, 138, 0),
+(59, NULL, 60000, 3, 139, 0),
+(60, NULL, 60000, 3, 140, 0);
 
 -- --------------------------------------------------------
 
@@ -312,12 +522,6 @@ ALTER TABLE `booking`
   ADD KEY `FK_BOOKING_CLIENT` (`USER_ID`);
 
 --
--- Indexes for table `cinema`
---
-ALTER TABLE `cinema`
-  ADD PRIMARY KEY (`ID`);
-
---
 -- Indexes for table `foodcombo`
 --
 ALTER TABLE `foodcombo`
@@ -350,6 +554,20 @@ ALTER TABLE `product_fcb`
   ADD KEY `FK_FCB_PRODUCT` (`FCB_ID`);
 
 --
+-- Indexes for table `role`
+--
+ALTER TABLE `role`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `schedule`
+--
+ALTER TABLE `schedule`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `FK_Schedule_Movie` (`MOVIE_ID`),
+  ADD KEY `FKfmo3obtsyl8xtr3n6ly5n1esl` (`THEATER_ID`);
+
+--
 -- Indexes for table `seat`
 --
 ALTER TABLE `seat`
@@ -357,16 +575,19 @@ ALTER TABLE `seat`
   ADD KEY `FK_SEAT_THEATER` (`THEATER_ID`);
 
 --
--- Indexes for table `ticket`
+-- Indexes for table `theater`
 --
-ALTER TABLE `ticket`
+ALTER TABLE `theater`
   ADD PRIMARY KEY (`ID`);
 
 --
--- Indexes for table `ticket_seat_schedule`
+-- Indexes for table `ticket`
 --
-ALTER TABLE `ticket_seat_schedule`
-  ADD PRIMARY KEY (`SEAT_ID`,`SCHEDULE_ID`,`TICKET_ID`);
+ALTER TABLE `ticket`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `FKrg7x158t96nucwslhq2bad6qm` (`BOOKING_ID`),
+  ADD KEY `FKqahao9a85drt47ikjp0b8syvh` (`seat_id`),
+  ADD KEY `FKdmmaqgvu0kjjlpsivmgnvurl5` (`schedule_id`);
 
 --
 -- Indexes for table `user`
@@ -386,20 +607,98 @@ ALTER TABLE `users_roles`
 --
 
 --
+-- AUTO_INCREMENT for table `booking`
+--
+ALTER TABLE `booking`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `foodcombo`
+--
+ALTER TABLE `foodcombo`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `movie`
 --
 ALTER TABLE `movie`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
+-- AUTO_INCREMENT for table `product`
+--
+ALTER TABLE `product`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `schedule`
+--
+ALTER TABLE `schedule`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `seat`
+--
+ALTER TABLE `seat`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+
+--
+-- AUTO_INCREMENT for table `theater`
+--
+ALTER TABLE `theater`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `ticket`
+--
+ALTER TABLE `ticket`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+
+--
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `food_booking`
+--
+ALTER TABLE `food_booking`
+  ADD CONSTRAINT `FK842h6awo74qxllo0mg5a1cmx` FOREIGN KEY (`BOOKING_ID`) REFERENCES `foodcombo` (`ID`),
+  ADD CONSTRAINT `FK8sgf4xmqy2mfmxxa4967hjaf0` FOREIGN KEY (`FOOD_ID`) REFERENCES `booking` (`ID`);
+
+--
+-- Constraints for table `product_fcb`
+--
+ALTER TABLE `product_fcb`
+  ADD CONSTRAINT `FKc7i22kucmq4j6k4ho5y6616dm` FOREIGN KEY (`PRODUCT_ID`) REFERENCES `product` (`ID`),
+  ADD CONSTRAINT `FKrv1lcn6e5dpnskkoccriuqxj` FOREIGN KEY (`FCB_ID`) REFERENCES `foodcombo` (`ID`);
+
+--
+-- Constraints for table `schedule`
+--
+ALTER TABLE `schedule`
+  ADD CONSTRAINT `FK_Schedule_Movie` FOREIGN KEY (`MOVIE_ID`) REFERENCES `movie` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FKfmo3obtsyl8xtr3n6ly5n1esl` FOREIGN KEY (`THEATER_ID`) REFERENCES `theater` (`ID`);
+
+--
+-- Constraints for table `seat`
+--
+ALTER TABLE `seat`
+  ADD CONSTRAINT `FKgik5885qsff01sxe7v3kqjrhx` FOREIGN KEY (`THEATER_ID`) REFERENCES `theater` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `ticket`
+--
+ALTER TABLE `ticket`
+  ADD CONSTRAINT `FKdmmaqgvu0kjjlpsivmgnvurl5` FOREIGN KEY (`schedule_id`) REFERENCES `schedule` (`ID`),
+  ADD CONSTRAINT `FKqahao9a85drt47ikjp0b8syvh` FOREIGN KEY (`seat_id`) REFERENCES `seat` (`ID`),
+  ADD CONSTRAINT `FKrg7x158t96nucwslhq2bad6qm` FOREIGN KEY (`BOOKING_ID`) REFERENCES `booking` (`ID`);
 
 --
 -- Constraints for table `users_roles`
 --
 ALTER TABLE `users_roles`
-  ADD CONSTRAINT `FKgd3iendaoyh04b95ykqise6qh` FOREIGN KEY (`USER_ID`) REFERENCES `user` (`ID`);
+  ADD CONSTRAINT `FK_USERS_ROLES` FOREIGN KEY (`USER_ID`) REFERENCES `user` (`ID`),
+  ADD CONSTRAINT `FKt4v0rrweyk393bdgt107vdx0x` FOREIGN KEY (`ROLE_ID`) REFERENCES `role` (`ID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

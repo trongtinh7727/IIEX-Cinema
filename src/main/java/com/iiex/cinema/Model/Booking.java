@@ -20,13 +20,8 @@ public class Booking {
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date created_at ;
 
-    @ManyToOne
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+
 
     @OneToMany(mappedBy = "booking",cascade = CascadeType.ALL)
     private Collection<Ticket> tickets;
@@ -36,7 +31,7 @@ public class Booking {
     @ToString.Exclude
     @JsonIgnore
     @JoinTable(
-            name = "foods_bookings",
+            name = "food_booking",
             joinColumns = {
                     @JoinColumn(name = "food_id", referencedColumnName = "id"),
             },

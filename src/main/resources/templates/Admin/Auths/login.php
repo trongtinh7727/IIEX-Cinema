@@ -39,7 +39,7 @@
 
         body {
             margin: 0;
-            background: url('../assets/img/signin-signup/container-main.png');
+            background: url(../assets/img/signin-signup/container-main.png);
             background-size: cover;
             font: 600 16px/18px 'Open Sans', sans-serif;
         }
@@ -160,19 +160,18 @@
     <div id="wrapper" class="vh-100 d-flex justify-content-around align-items-center">
         <!-- Logo and photo -->
         <div class="d-flex flex-column justify-content-center">
-
-            <img th:src="@{/assets/img/signin-signup/Logo.png}" class="align-self-center" alt="Logo">
-            <img th:src="@{/assets/img/signin-signup/Photo.png}" class="align-self-center" alt="Logo">
+            <img src="../assets/img/signin-signup/Logo.png" class="align-self-center" alt="Logo">
+            <img src="../assets/img/signin-signup/Photo.png" class="align-self-center" alt="Logo">
         </div>
         <!-- Login form -->
         <div class="login-wrap rounded-5 w-50">
             <div class="login-html w-100 h-100 px-5 py-5 rounded-5 clearfix">
                 <!-- Tab 1 -->
                 <input id="tab-1" type="radio" name="tab" class="sign-in" checked>
-                <label id="tab-1-label" for="tab-1" class="tab fs-3 text-white text-yellow">Đăng nhập</label>
+                <label id="tab-1-label" for="tab-1" class="tab fs-3 text-white text-yellow">Admin</label>
 
                 <!-- Tab 2 -->
-                <input id="tab-2" type="radio" name="tab" class="sign-up">
+                <input id="tab-2" type="radio" name="tab" class="sign-up" disabled>
                 <label id="tab-2-label" for="tab-2" class="tab fs-3 text-white float-end">Đăng ký</label>
 
                 <!-- Form main -->
@@ -180,10 +179,10 @@
 
                     <!-- Sign in -->
                     <div class="sign-in-html">
-                        <form action="./login" method="post">
+                        <form action="./?admin/login" method="post">
                             <!-- Input -->
                             <div class="group mt-5">
-                                <label for="user" class="label w-100 d-block text-black fw-semibold text-yellow fs-6">Email</label>
+                                <label for="user" class="label w-100 d-block text-black fw-semibold text-yellow fs-6">Username hoặc Email</label>
                                 <input name="username" id="sign-in-user" placeholder="Username" aria-label="sign-in-username" type="text" class="input mt-3 rounded-5 w-100 d-block text-black fw-semibold">
                             </div>
 
@@ -198,6 +197,7 @@
                                 <input type="submit" class="button rounded-5 w-100 d-block text-black fw-semibold bg-yellow fs-4" value="Đăng nhập">
                             </div>
                             <hr style="height: 2px; background-color: rgb(0, 0, 0, 0.5);">
+                            <input type="hidden" name="tb" value="staff">
                         </form>
                     </div>
 
@@ -207,7 +207,7 @@
                         <!-- Input -->
                         <!-- Sign up username -->
                         <div class="group mt-5">
-                            <label for="user" class="label w-100 d-block text-black fw-semibold text-yellow fs-6">Họ và tên</label>
+                            <label for="user" class="label w-100 d-block text-black fw-semibold text-yellow fs-6">Username</label>
                             <input id="sign-up-user" placeholder="Username123" type="text" class="input mt-3 rounded-5 w-100 d-block text-black fw-semibold">
                         </div>
                         <!-- Sign up email -->

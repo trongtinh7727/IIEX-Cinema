@@ -25,9 +25,4 @@ public class Role {
     @JsonIgnore
     private Collection<User> users;
 
-    @ManyToMany(mappedBy = "roles")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @JsonIgnore
-    private Collection<Staff> staffs;
 }

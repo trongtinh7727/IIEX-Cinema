@@ -17,13 +17,13 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "start_time")
+    @Column(name = "startTime")
     @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date start_time;
+    private java.util.Date startTime;
 
-    @Column(name = "end_time")
+    @Column(name = "endTime")
     @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date end_time;
+    private java.util.Date endTime;
 
     @ManyToOne
     @JoinColumn(name = "movie_id")
@@ -32,5 +32,9 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "theater_id")
     private Theater theater;
+
+    @OneToMany(mappedBy = "schedule")
+    private  Collection<Ticket> tickets;
+
 
 }
