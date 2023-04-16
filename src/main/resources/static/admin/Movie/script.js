@@ -4,7 +4,7 @@ function fillEditForm(btn) {
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
 
-        $.post("./?api/movie/getbyid", {
+        $.post("/api/movie/getbyid", {
             ID
         }, function(data, status) {
             var table = $('#table');
@@ -26,30 +26,35 @@ function fillEditForm(btn) {
     $(document).ready(function() {
 
         var table = $('#dataTable').DataTable({
-            ajax: "./?api/movie/getall",
+            ajax: "/api/movies",
             columns: [{
-                    data: 'ID'
+                    data: 'id'
                 },
                 {
-                    data: 'TITLE'
+                    data: 'title'
                 },
                 {
-                    data: 'DIRECTOR'
+                    data: 'director'
                 },
                 {
-                    data: 'ACTORS'
+                    data: 'actors'
                 },
                 {
-                    data: 'GENRE'
+                    data: 'genre'
                 },
                 {
-                    data: 'DURATION'
+                    data: 'duration'
                 },
                 {
-                    data: 'OPENING_DAY'
+                    data: null,
+                    render: function(data, type, row) {
+                    return moment(data.opening_day).format('MM/DD/YYYY');
+                    }
                 },
-                {
-                    data: 'CLOSING_DAY'
+                {   data: null,
+                    render: function(data, type, row) {
+                    return moment(data.closing_day).format('MM/DD/YYYY');
+                    }
                 },
                 {
                     data: null,

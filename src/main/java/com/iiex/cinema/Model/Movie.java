@@ -1,11 +1,11 @@
 package com.iiex.cinema.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Collection;
 
 @Data
 @NoArgsConstructor
@@ -13,31 +13,32 @@ import java.util.Collection;
 @Entity
 @Table(name = "movie")
 public class Movie {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 
-    private String title;
-    private String genre;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-    private int duration;
+  private String title;
+  private String genre;
+  private String director;
+  private String actors;
 
-    private float rating;
+  private int duration;
 
-    private String story;
-    private  String poster;
+  private float rating;
 
-    @Column(name = "OPENING_DAY")
-    @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date opening_day;
+  private String story;
+  private String poster;
 
-    @Column(name = "CLOSING_DAY")
-    @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date closing_day;
+  @Column(name = "OPENING_DAY")
+  @Temporal(TemporalType.TIMESTAMP)
+  private java.util.Date opening_day;
 
+  @Column(name = "CLOSING_DAY")
+  @Temporal(TemporalType.TIMESTAMP)
+  private java.util.Date closing_day;
 
-    @OneToMany(mappedBy = "movie",cascade = CascadeType.ALL)
-    private Collection<Schedule> schedules;
-
-
+  @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+  @JsonIgnore
+  private Collection<Schedule> schedules;
 }

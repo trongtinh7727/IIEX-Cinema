@@ -22,6 +22,7 @@
 
     <link rel="stylesheet" th:href="@{/assets/style.css}">
 
+
     <style>
         .poster {
             width: 100px;
@@ -51,9 +52,9 @@
             This is a danger alert—check it out!
         </div>
         <div class="container">
-            <div th:insert="/Admin/Movie/Add :: modalAdd"></div>
-            <div th:insert="/Admin/Movie/Remove :: modalDelete"></div>
-            <div th:insert="/Admin/Movie/Table :: table"></div>
+            <div th:insert="/Admin/__${fragmentName}__/Add :: modalAdd"></div>
+            <div th:insert="/Admin/__${fragmentName}__/Remove :: modalDelete"></div>
+            <div th:insert="/Admin/__${fragmentName}__/Table :: table"></div>
         </div>
 
     </div>
@@ -72,8 +73,12 @@
     <!-- Datatable Bootstrap -->
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
     <!-- JS -->
-    <script language="JavaScript" type="text/javascript" src="./script.js"></script>
+    <script th:src="@{/admin/__${fragmentName}__/script.js}"></script>
+
 </body>
 
 </html>

@@ -1,5 +1,4 @@
-<script>
-    $('#addEmployeeModal').on('hidden.bs.modal', function() {
+$('#addEmployeeModal').on('hidden.bs.modal', function() {
         clearForm()
     })
 
@@ -125,4 +124,3 @@
 
 
     })
-</script>

@@ -1,5 +1,6 @@
 package com.iiex.cinema.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,9 +20,11 @@ public class Seat {
     private int seatNumber;
     private String seatType;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "theater_id")
     private Theater theater;
 
     @OneToMany(mappedBy = "seat")
+    @JsonIgnore
     private Collection<Ticket> tickets;
 }

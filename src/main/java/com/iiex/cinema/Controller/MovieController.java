@@ -1,8 +1,11 @@
 package com.iiex.cinema.Controller;
 
+import com.iiex.cinema.Api.CustomResponse;
 import com.iiex.cinema.Model.Movie;
 import com.iiex.cinema.Service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +21,10 @@ public class MovieController {
     }
 
     @GetMapping("")
-    List<Movie> all() {
-        return movieService.finAllMovies();
+    ResponseEntity<CustomResponse> all() {
+        List<Movie> movies = movieService.finAllMovies();
+        CustomResponse<Movie> response = new CustomResponse(true, movies);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("")
