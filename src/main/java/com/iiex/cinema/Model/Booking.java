@@ -20,10 +20,8 @@ public class Booking {
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date created_at ;
 
-
-
-
     @OneToMany(mappedBy = "booking",cascade = CascadeType.ALL)
+    @JsonIgnore
     private Collection<Ticket> tickets;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

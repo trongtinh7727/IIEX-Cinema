@@ -36,5 +36,4 @@ public class Schedule {
     @OneToMany(mappedBy = "schedule")
     private  Collection<Ticket> tickets;
 
-
 }
