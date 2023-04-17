@@ -27,6 +27,7 @@ public class Movie {
 
     private String story;
     private  String poster;
+    private String trailer;
 
     @Column(name = "OPENING_DAY")
     @Temporal(TemporalType.TIMESTAMP)
