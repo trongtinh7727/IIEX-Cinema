@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -27,8 +28,10 @@ public class MovieController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("")
-    Movie newMovie(@RequestBody Movie newMovie) {
-        return movieService.saveMovie(newMovie);
+    ResponseEntity<CustomResponse> newMovie(@RequestBody Movie newMovie) {
+        movieService.saveMovie(newMovie);
+        CustomResponse<Movie> response = new CustomResponse(true,"Thêm thành công");
+        return ResponseEntity.ok(response);
     }
     @GetMapping("/{id}")
     Movie one(@PathVariable Long id) {
@@ -36,10 +39,27 @@ public class MovieController {
     }
 
     @PutMapping("/{id}")
-    Movie update(@PathVariable Movie movie){
-        Movie oldMovie = movieService.finMovieByID(movie.getId());
-        return movieService.saveMovie(oldMovie);
+    ResponseEntity<CustomResponse> replaceEmployee(@RequestBody Movie newMovie, @PathVariable Long id) {
+        Movie movie = movieService.finMovieByID(id);
+        movie.setActors(newMovie.getActors());
+        movie.setDirector(newMovie.getDirector());
+        movie.setGenre(newMovie.getGenre());
+        movie.setDuration(newMovie.getDuration());
+        movie.setPoster(newMovie.getPoster());
+        movie.setStory(newMovie.getStory());
+        movie.setTitle(newMovie.getTitle());
+        movie.setTrailer(newMovie.getTrailer());
+        movie.setOpening_day(newMovie.getOpening_day());
+        movie.setClosing_day(newMovie.getClosing_day());
+        movie.setRating(newMovie.getRating());
+        movieService.saveMovie(movie);
+        CustomResponse<Movie> response = new CustomResponse(true,"Sửa thành công");
+        return ResponseEntity.ok(response);
     }
     @DeleteMapping("/{id}")
-    void delete(@PathVariable Long id){ movieService.delete(id);}
+    ResponseEntity<CustomResponse> delete(@PathVariable Long id){
+        movieService.delete(id);
+        CustomResponse<Movie> response = new CustomResponse(true,"Xóa thành công");
+        return ResponseEntity.ok(response);
+    }
 }
