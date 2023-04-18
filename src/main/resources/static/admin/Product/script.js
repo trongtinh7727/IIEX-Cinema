@@ -20,6 +20,7 @@ $(document).ready(function() {
 
     var table = $('#dataTable').DataTable({
         ajax: "/api/products",
+
         columns: [{
                 data: 'id'
             },
@@ -39,6 +40,12 @@ $(document).ready(function() {
                 data: null,
                 render: function(data, type, row) {
                 return moment(data.expiry_date).format('MM/DD/YYYY');
+                }
+            },
+            {
+                data: null,
+                render: function(data, type, row) {
+                    return '<button name="btn_delete_employee" class="btn btn-outline-danger" onclick="confirmRemoval(this)" > Delete </button> <button name="btn_edit_employee" class="btn btn-outline-secondary" onclick="fillEditForm(this)" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" > Edit </button>';
                 }
             }
         ]

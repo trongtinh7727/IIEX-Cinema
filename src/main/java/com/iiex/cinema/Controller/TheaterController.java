@@ -1,11 +1,14 @@
 package com.iiex.cinema.Controller;
 
 
+import com.iiex.cinema.Api.CustomResponse;
+import com.iiex.cinema.Model.Movie;
 import com.iiex.cinema.Model.Product;
 import com.iiex.cinema.Model.Theater;
 import com.iiex.cinema.Service.ProductService;
 import com.iiex.cinema.Service.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,23 +23,34 @@ public class TheaterController {
         this.theaterService = theaterService;
     }
     @GetMapping("")
-    List<Theater> all() {
-        return theaterService.findAllTheater();
+    ResponseEntity<CustomResponse> all() {
+        List<Theater> theaters = theaterService.findAllTheater();
+        CustomResponse<Product> response = new CustomResponse(true, theaters);
+        return ResponseEntity.ok(response);
     }
     @PostMapping("")
-    Theater newMovie(@RequestBody Theater newProduct) {
-        return theaterService.saveTheater(newProduct);
+    ResponseEntity<CustomResponse> getNewProduct(@RequestBody Theater newTheater) {
+        theaterService.saveTheater(newTheater);
+        CustomResponse<Theater> response = new CustomResponse(true,"Thêm thành công");
+        return ResponseEntity.ok(response);
     }
     @GetMapping("/{id}")
     Theater one(@PathVariable Long id) {
         return theaterService.findTheaterByID(id);
     }
     @DeleteMapping("/{id}")
-    void delete(@PathVariable Long id){ theaterService.delete(id);}
-
+    ResponseEntity<CustomResponse> delete(@PathVariable Long id){
+        theaterService.delete(id);
+        CustomResponse<Theater> response = new CustomResponse(true,"Xóa thành công");
+        return ResponseEntity.ok(response);
+    }
     @PutMapping("/{id}")
-    Theater update(@PathVariable Theater theater){
-        Theater oldProduct = theaterService.findTheaterByID(theater.getId());
-        return theaterService.saveTheater(oldProduct);
+    ResponseEntity<CustomResponse> update(@RequestBody Theater newTheater, @PathVariable Long id){
+        Theater theater = theaterService.findTheaterByID(id);
+        theater.setTheaterNumber(newTheater.getTheaterNumber());
+
+        theaterService.saveTheater(theater);
+        CustomResponse<Theater> response = new CustomResponse(true,"Sửa thành công");
+        return ResponseEntity.ok(response);
     }
 }

@@ -38,7 +38,9 @@ public class SpringSecurity {
             "/js/**",
             "/img/**",
             "/fonts/**",
-            "/api/products/**"
+            "/api/products/**",
+                  "/logout",
+                  "login"
           )
           .permitAll()
           .requestMatchers("/index", "/")
