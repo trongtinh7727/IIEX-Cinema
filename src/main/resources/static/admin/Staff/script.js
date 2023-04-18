@@ -10,11 +10,9 @@
             // data.data.forEach(function(object) {
                 $('#USERNAME').val(data.email)
                 $('.pass').hide();
-                // $('#FNAME').val(data.FIRSTNAME)
-                // $('#LNAME').val(data.LASTNAME)
                 $('#NAME').val(data.name)
                 $('#ADDRESS').val(data.address)
-                $('#SALARY').val(data.salary)
+                // $('#SALARY').val(data.salary)
             // });
 
         }, "json");
@@ -35,10 +33,10 @@
                 {
                     data: "address"
                 },
-                {
-                    data: "salary",
-                    render: $.fn.dataTable.render.number(',', '.', 0, '$')
-                },
+                // {
+                //     data: "salary",
+                //     render: $.fn.dataTable.render.number(',', '.', 0, '$')
+                // },
                 {
                     data: null,
                     render: function(data, type, row) {
@@ -56,7 +54,7 @@
             // $('#LNAME').val(data.LASTNAME)
             let NAME =  $('#NAME').val()
             let ADDRESS = $('#ADDRESS').val()
-            let SALARY = $('#SALARY').val()
+            // let SALARY = $('#SALARY').val()
             let action = $("#action").val();
     
             if (action == "Add") {

@@ -9,10 +9,7 @@ import com.iiex.cinema.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,8 +30,14 @@ public class UserController {
     }
     @GetMapping("/{id}")
     User one(@PathVariable Long id) {
-        return userService.findByEmail(id);
+        return userService.findById(id);
     }
+//    @PostMapping("")
+//    ResponseEntity<CustomResponse> getNewUser(@RequestBody User newUser) {
+//        userService.saveUser(newUser);
+//        CustomResponse<User> response = new CustomResponse(true,"Thêm thành công");
+//        return ResponseEntity.ok(response);
+//    }
     @DeleteMapping("/{id}")
     ResponseEntity<CustomResponse> delete(@PathVariable Long id){
         userService.delete(id);
