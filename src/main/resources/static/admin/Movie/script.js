@@ -4,7 +4,7 @@ function fillEditForm(btn) {
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
 
-        $.post("./?api/movie/getbyid", {
+        $.post("/api/movie/getbyid", {
             ID
         }, function(data, status) {
             var table = $('#table');
@@ -26,30 +26,35 @@ function fillEditForm(btn) {
     $(document).ready(function() {
 
         var table = $('#dataTable').DataTable({
-            ajax: "./?api/movie/getall",
+            ajax: "/api/movies",
             columns: [{
-                    data: 'ID'
+                    data: 'id'
                 },
                 {
-                    data: 'TITLE'
+                    data: 'title'
                 },
                 {
-                    data: 'DIRECTOR'
+                    data: 'director'
                 },
                 {
-                    data: 'ACTORS'
+                    data: 'actors'
                 },
                 {
-                    data: 'GENRE'
+                    data: 'genre'
                 },
                 {
-                    data: 'DURATION'
+                    data: 'duration'
                 },
                 {
-                    data: 'OPENING_DAY'
+                    data: null,
+                    render: function(data, type, row) {
+                    return moment(data.opening_day).format('MM/DD/YYYY');
+                    }
                 },
-                {
-                    data: 'CLOSING_DAY'
+                {   data: null,
+                    render: function(data, type, row) {
+                    return moment(data.closing_day).format('MM/DD/YYYY');
+                    }
                 },
                 {
                     data: null,
@@ -76,94 +81,108 @@ function fillEditForm(btn) {
             let action = $("#action").val();
 
             if (action == "Add") {
-                $.post("./?api/movie/add", {
-                    TITLE,
-                    DIRECTOR,
-                    ACTORS,
-                    GENRE,
-                    STORY,
-                    DURATION,
-                    OPENING_DAY,
-                    CLOSING_DAY,
-                    POSTER,
-                    TRAILER
-                }, function(data, status) {
-                    console.log(data)
-                    if (data.status) {
-                        console.log("Okee")
-                        table.ajax.reload();
-                        let msg = data.data;
-                        console.log(msg)
+                var settings = {
+                    "url": "/api/movies",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                        "title": TITLE,
+                        "genre": GENRE,
+                        "director": DIRECTOR,
+                        "actors": ACTORS,
+                        "duration": DURATION,
+                        "rating": 5,
+                        "story": STORY,
+                        "poster": POSTER,
+                        "opening_day": OPENING_DAY,
+                        "closing_day": CLOSING_DAY,
+                        "trailer": TRAILER
+                    }),
+                };
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    table.ajax.reload();
+                    if (response.status) {
+                        let msg = response.message;
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                }, "json")
+                });
+
             } else {
                 let ID = $("#action").val();
-                $.post("./?api/movie/update", {
-                    TITLE,
-                    DIRECTOR,
-                    ACTORS,
-                    GENRE,
-                    STORY,
-                    DURATION,
-                    OPENING_DAY,
-                    CLOSING_DAY,
-                    POSTER,
-                    TRAILER,
-                    ID
-                }, function(data, status) {
-                    console.log(data)
-                    if (data.status) {
-                        console.log("Okee")
-                        table.ajax.reload();
-                        let msg = data.data;
-                        console.log(msg)
+                var settings = {
+                    "url": "/api/movies/"+ID,
+                    "method": "PUT",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                        "title": TITLE,
+                        "genre": GENRE,
+                        "director": DIRECTOR,
+                        "actors": ACTORS,
+                        "duration": DURATION,
+                        "rating": 5,
+                        "story": STORY,
+                        "poster": POSTER,
+                        "opening_day": OPENING_DAY,
+                        "closing_day": CLOSING_DAY,
+                        "trailer": TRAILER
+                    }),
+                };
+
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    table.ajax.reload();
+                    if (response.status) {
+                        let msg = response.message;
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                }, "json")
+                });
                 $("#action").val("Add");
             }
             clearForm()
         });
 
-
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("./?api/movie/delete", {
-                id: uid
-            }, function(data, status) {
-                console.log(data)
-                if (data.status) {
-                    table.ajax.reload();
-                    let msg = data.data;
-                    console.log(msg)
+            var settings = {
+                "url": "/api/movies/"+uid,
+                "method": "DELETE",
+                "timeout": 0
+            };
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                table.ajax.reload();
+                if (response.status) {
+                    let msg = response.message;
                     $("#msg-success").css('display', 'flex').text(msg)
                     $("#msg-failed").css('display', 'none')
                 } else {
-                    let msg = data.data;
+                    let msg = response.message;
                     console.log(msg)
                     $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                     $("#msg-success").css('display', 'none')
-                    $('#confirm-removal-modal').modal({
-                        show: false
-                    });
                 }
-            }, "json")
+
+            });
         })
-
-
     });
     $('#addEmployeeModal').on('hidden.bs.modal', function() {
         clearForm()

@@ -20,6 +20,7 @@ public class Seat {
     private int seatNumber;
     private String seatType;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "theater_id")
     private Theater theater;
 
