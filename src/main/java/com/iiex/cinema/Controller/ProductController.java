@@ -1,8 +1,10 @@
 package com.iiex.cinema.Controller;
+import com.iiex.cinema.Api.CustomResponse;
 import com.iiex.cinema.Model.Movie;
 import com.iiex.cinema.Model.Product;
 import com.iiex.cinema.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -16,23 +18,38 @@ public class ProductController {
         this.productService = productService;
     }
     @GetMapping("")
-    List<Product> all() {
-        return productService.findAllProduct();
+    ResponseEntity<CustomResponse> all() {
+        List<Product> products = productService.findAllProduct();
+        CustomResponse<Product> response = new CustomResponse(true, products);
+        return ResponseEntity.ok(response);
     }
     @PostMapping("")
-    Product getNewProduct(@RequestBody Product newProduct) {
-        return productService.saveProduct(newProduct);
+    ResponseEntity<CustomResponse> getNewProduct(@RequestBody Product newProduct) {
+        productService.saveProduct(newProduct);
+        CustomResponse<Product> response = new CustomResponse(true,"Thêm thành công");
+        return ResponseEntity.ok(response);
     }
     @GetMapping("/{id}")
     Product one(@PathVariable Long id) {
         return productService.findProductByID(id);
     }
     @DeleteMapping("/{id}")
-    void delete(@PathVariable Long id){ productService.delete(id);}
-
+    ResponseEntity<CustomResponse> delete(@PathVariable Long id){ 
+        productService.delete(id);
+        CustomResponse<Product> response = new CustomResponse(true,"Xóa thành công");
+        return ResponseEntity.ok(response);
+    }
     @PutMapping("/{id}")
-    Product update(@PathVariable Product product){
-        Product oldProduct = productService.findProductByID(product.getId());
-        return productService.saveProduct(oldProduct);
+    ResponseEntity<CustomResponse> replaceEmployee(@RequestBody Product newProduct, @PathVariable Long id) {
+        Product product = productService.findProductByID(id);
+        product.setName(newProduct.getName());
+        product.setPrice(newProduct.getPrice());
+        product.setQuantity(newProduct.getQuantity());
+        product.setComboFoods(newProduct.getComboFoods());
+        product.setExpiry_date(newProduct.getExpiry_date());
+        product.setType(newProduct.getType());
+        productService.saveProduct(product);
+        CustomResponse<Movie> response = new CustomResponse(true,"Sửa thành công");
+        return ResponseEntity.ok(response);
     }
 }
