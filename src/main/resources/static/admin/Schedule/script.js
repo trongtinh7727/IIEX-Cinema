@@ -1,5 +1,4 @@
-<script>
-    function fillEditForm(btn) {
+function fillEditForm(btn) {
         $("#addModalLabel").val("Update");
         let tds = $(btn).closest('tr').find('td')
         let ID = tds[0].innerHTML;
@@ -44,19 +43,19 @@
         var table = $('#dataTable').DataTable({
             ajax: "./?api/schedule/getByTheater&theater_id=-1",
             columns: [{
-                    data: 'ID'
+                    data: 'id'
                 },
                 {
-                    data: 'TITLE'
+                    data: 'title'
                 },
                 {
-                    data: 'DURATION'
+                    data: 'duration'
                 },
                 {
-                    data: 'STARTTIME'
+                    data: 'start_time'
                 },
                 {
-                    data: 'ENDTIME'
+                    data: 'end_time'
                 },
                 {
                     data: null,
@@ -243,4 +242,3 @@
         $("#phone").val("");
     }
     $(document).ready(function() {});
-</script>

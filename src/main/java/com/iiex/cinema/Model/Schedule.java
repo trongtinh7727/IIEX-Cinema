@@ -26,14 +26,17 @@ public class Schedule {
     private java.util.Date endTime;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "theater_id")
     private Theater theater;
 
     @OneToMany(mappedBy = "schedule")
+    @JsonIgnore
     private  Collection<Ticket> tickets;
 
 }
