@@ -63,6 +63,11 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<User> findAllUsers(Role role) {
+        return userRepository.findAllByRoles(role);
+    }
+
 
     @Override
     public String getCurrentUsername() {

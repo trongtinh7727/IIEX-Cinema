@@ -5,6 +5,7 @@ package com.iiex.cinema.Service;
 
 
 import com.iiex.cinema.DTO.UserDto;
+import com.iiex.cinema.Model.Role;
 import com.iiex.cinema.Model.User;
 
 import java.util.List;
@@ -16,6 +17,6 @@ public interface UserService  {
 
     List<UserDto> findAllUsers();
 
-
+    List<User> findAllUsers(Role role);
     String getCurrentUsername();
 }
