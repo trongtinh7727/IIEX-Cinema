@@ -20,7 +20,7 @@ public class ProductController {
         return productService.findAllProduct();
     }
     @PostMapping("")
-    Product newMovie(@RequestBody Product newProduct) {
+    Product getNewProduct(@RequestBody Product newProduct) {
         return productService.saveProduct(newProduct);
     }
     @GetMapping("/{id}")
