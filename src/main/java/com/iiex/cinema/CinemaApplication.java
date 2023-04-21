@@ -22,7 +22,7 @@ public class CinemaApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        movieService.finAllMovies().forEach(p-> System.out.println(p.getId()));
-        System.out.println(productService.findAllProduct().size());
+//        movieService.finAllMovies().forEach(p -> System.out.println(p.getClosing_day()));
+        movieService.findAllIsOnGoing().forEach(p-> System.out.println(p.getId()));
     }
 }

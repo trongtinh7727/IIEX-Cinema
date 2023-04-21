@@ -27,6 +27,12 @@ public class MovieController {
         CustomResponse<Movie> response = new CustomResponse(true, movies);
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/ongoing")
+    ResponseEntity<CustomResponse> allOngoing() {
+        List<Movie> movies = movieService.findAllIsOnGoing();
+        CustomResponse<Movie> response = new CustomResponse(true, movies);
+        return ResponseEntity.ok(response);
+    }
     @PostMapping("")
     ResponseEntity<CustomResponse> newMovie(@RequestBody Movie newMovie) {
         movieService.saveMovie(newMovie);
@@ -62,4 +68,5 @@ public class MovieController {
         CustomResponse<Movie> response = new CustomResponse(true,"Xóa thành công");
         return ResponseEntity.ok(response);
     }
+
 }

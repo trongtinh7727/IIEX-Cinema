@@ -49,7 +49,7 @@ public class ProductController {
         product.setExpiry_date(newProduct.getExpiry_date());
         product.setType(newProduct.getType());
         productService.saveProduct(product);
-        CustomResponse<Movie> response = new CustomResponse(true,"Sửa thành công");
+        CustomResponse<Product> response = new CustomResponse(true,"Sửa thành công");
         return ResponseEntity.ok(response);
     }
 }

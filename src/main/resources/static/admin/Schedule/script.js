@@ -3,7 +3,7 @@ function fillEditForm(btn) {
         let tds = $(btn).closest('tr').find('td')
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
-        $.post("./?api/schedule/getbyid", {
+        $.post("/api/schedules/"+ID, {
             ID
         }, function(data, status) {
             var table = $('#table');
@@ -27,7 +27,7 @@ function fillEditForm(btn) {
             option.value = -1;
             option.innerText = "Chọn phòng chiếu";
             $('#theaterBox').append(option);
-            $.get("./?api/theater/getall", function(data, status) {
+            $.get("/api/theaters", function(data, status) {
                 var table = $('#table');
                 console.log(data)
                 data.data.forEach(function(object) {
@@ -41,7 +41,7 @@ function fillEditForm(btn) {
         load_theater()
 
         var table = $('#dataTable').DataTable({
-            ajax: "./?api/schedule/getByTheater&theater_id=-1",
+            ajax: "/api/schedules/getByTheater/-1",
             columns: [{
                     data: 'id'
                 },
@@ -74,7 +74,7 @@ function fillEditForm(btn) {
 
 
         function load_ongoing_movie() {
-            $.get("./?api/movie/ongoing", function(data, status) {
+            $.get("/api/movies/ongoing", function(data, status) {
                 var table = $('#table');
                 console.log(data)
                 data.data.forEach(function(object) {
@@ -91,7 +91,7 @@ function fillEditForm(btn) {
         let jsonArrayObj = [{}];
         $('#theaterBox').change(function() {
             let theater_id = $('#theaterBox').val();
-            table.ajax.url("./?api/schedule/getByTheater&theater_id=" + theater_id).load();
+            table.ajax.url("/api/schedules/getByTheater/" + theater_id).load();
         })
 
 
