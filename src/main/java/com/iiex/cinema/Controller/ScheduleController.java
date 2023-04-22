@@ -2,6 +2,7 @@ package com.iiex.cinema.Controller;
 
 
 import com.iiex.cinema.Api.CustomResponse;
+import com.iiex.cinema.DTO.ScheduleDTO;
 import com.iiex.cinema.Model.Movie;
 import com.iiex.cinema.Model.Product;
 import com.iiex.cinema.Model.Schedule;
@@ -62,8 +63,8 @@ public class ScheduleController {
 
     @GetMapping("/getByTheater/{id}")
     ResponseEntity<CustomResponse> getAllByTheater(@PathVariable Long id) {
-        List<Schedule> schedules = scheduleService.findAllScheduleByTheater(theaterService.findTheaterByID(id));
-        CustomResponse<Schedule> response = new CustomResponse(true, schedules);
+        List<ScheduleDTO> schedules = scheduleService.findAllScheduleByTheater(theaterService.findTheaterByID(id));
+        CustomResponse<ScheduleDTO> response = new CustomResponse(true, schedules);
         return ResponseEntity.ok(response);
     }
 

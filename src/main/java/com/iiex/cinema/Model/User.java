@@ -20,9 +20,7 @@ public class User {
   private String name;
   private String email;
   private String address;
-
   private String password;
-
   @Column(name = "created")
   @Temporal(TemporalType.TIMESTAMP)
   private java.util.Date created;

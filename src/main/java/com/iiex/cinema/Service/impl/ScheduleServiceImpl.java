@@ -1,5 +1,6 @@
 package com.iiex.cinema.Service.impl;
 
+import com.iiex.cinema.DTO.ScheduleDTO;
 import com.iiex.cinema.Model.Schedule;
 import com.iiex.cinema.Model.Theater;
 import com.iiex.cinema.Repository.ProductRepository;
@@ -33,7 +34,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<Schedule> findAllScheduleByTheater(Theater theater) {
+    public List<ScheduleDTO> findAllScheduleByTheater(Theater theater) {
         return scheduleRepository.findAllByTheater(theater);
     }
 }

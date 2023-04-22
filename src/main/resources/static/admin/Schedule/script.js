@@ -32,8 +32,8 @@ function fillEditForm(btn) {
                 console.log(data)
                 data.data.forEach(function(object) {
                     var option = document.createElement('option');
-                    option.value = object.ID;
-                    option.innerText = "Phòng số " + object.THEATERNUM;
+                    option.value = object.id;
+                    option.innerText = "Phòng số " + object.theaterNumber;
                     $('#theaterBox').append(option);
                 });
             }, "json");
@@ -41,7 +41,7 @@ function fillEditForm(btn) {
         load_theater()
 
         var table = $('#dataTable').DataTable({
-            ajax: "/api/schedules/getByTheater/-1",
+            ajax: "/api/schedules/getByTheater/",
             columns: [{
                     data: 'id'
                 },
@@ -116,7 +116,7 @@ function fillEditForm(btn) {
                 let action = $("#action").val();
                 if (action == "Add") {
                     // Tao lich chieu
-                    $.post("./?api/schedule/add", {
+                    $.post("/api/schedules/add", {
                         THEA_ID,
                         MOV_ID,
                         STARTTIME,
@@ -141,7 +141,7 @@ function fillEditForm(btn) {
                     }, "json")
                 } else {
                     let ID = $("#action").val();
-                    $.post("./?api/schedule/update", {
+                    $.post("/api/schedules/update", {
                         THEA_ID,
                         MOV_ID,
                         STARTTIME,
@@ -172,7 +172,7 @@ function fillEditForm(btn) {
 
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("./?api/schedule/delete", {
+            $.post("/api/schedules/delete", {
                 id: uid
             }, function(data, status) {
                 console.log(data)

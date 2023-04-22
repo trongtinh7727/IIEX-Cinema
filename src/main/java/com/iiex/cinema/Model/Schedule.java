@@ -11,7 +11,6 @@ import java.util.Collection;
 @AllArgsConstructor
 @Entity
 @Table(name = "schedule")
-
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
