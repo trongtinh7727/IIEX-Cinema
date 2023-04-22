@@ -3,6 +3,9 @@ package com.iiex.cinema.Service.impl;
 import com.iiex.cinema.Model.Movie;
 import com.iiex.cinema.Repository.MovieRepository;
 import com.iiex.cinema.Service.MovieService;
+
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,11 @@ public class MovieServiceImpl implements MovieService {
   public Movie saveMovie(Movie movie) {
     movieRepository.save(movie);
     return movie;
+  }
+
+  @Override
+  public List<Movie> findAllIsOnGoing() {
+    return  movieRepository.findCurrentlyShowingMovies();
   }
 
   @Override

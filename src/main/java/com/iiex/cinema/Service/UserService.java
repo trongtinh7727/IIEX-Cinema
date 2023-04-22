@@ -19,4 +19,6 @@ public interface UserService  {
 
     List<User> findAllUsers(Role role);
     String getCurrentUsername();
+    User findById(Long id);
+    void delete(Long id);
 }

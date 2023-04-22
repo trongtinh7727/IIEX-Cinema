@@ -7,10 +7,15 @@ $('#addEmployeeModal').on('hidden.bs.modal', function() {
         let tds = $(btn).closest('tr').find('td');
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
-        $("#SEATCOUNT").prop('disabled', true);
-        $('#THEATERNUM').val(tds[1].innerText)
-        console.log("edit")
-        console.log(tds[1].innerText)
+        $.get("/api/theaters/"+ID, {
+        }, function(data, status) {
+            var table = $('#table');
+            console.log(data)
+            // data.data.forEach(function(object) {
+                $('#THEATERNUM').val(data.theaterNumber)
+                
+            // });
+        }, "json");
     }
 
     // hiện dialog xác nhận khi xóa
@@ -32,15 +37,15 @@ $('#addEmployeeModal').on('hidden.bs.modal', function() {
 
     $(document).ready(function() {
         var table = $('#dataTable').DataTable({
-            ajax: "./?api/theater/getall",
+            ajax: "/api/theaters",
             columns: [{
-                    data: 'ID'
+                    data: 'id'
                 },
                 {
-                    data: 'THEATERNUM'
+                    data: 'theaterNumber'
                 },
                 {
-                    data: 'SEATCOUNT'
+                    data: 'seatCount'
                 },
                 {
                     data: null,
@@ -54,73 +59,88 @@ $('#addEmployeeModal').on('hidden.bs.modal', function() {
 
         $("#addStaff").click(function() {
             let THEATERNUM = $('#THEATERNUM').val();
-            let SEATCOUNT = $('#SEATCOUNT').val();
-
+            let action = $('#action').val();
+            console.log(THEATERNUM);
             if (action == "Add") {
-                $.post("./?api/theater/add", {
-                    THEATERNUM,
-                    SEATCOUNT
-                }, function(data, status) {
-                    console.log(data)
-                    if (data.status) {
-                        table.ajax.reload();
-                        let msg = data.data;
-                        console.log(msg)
+                var settings = {
+                    "url": "/api/theaters",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                        "theaterNumber": THEATERNUM
+                    }),
+                };
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    table.ajax.reload();
+                    if (response.status) {
+                        let msg = response.message;
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                }, "json")
+                });
             } else {
                 let ID = $("#action").val();
-                $.post("./?api/theater/update", {
-                    THEATER_ID: ID,
-                    THEATERNUM
-                }, function(data, status) {
-                    console.log(data)
-                    if (data.status) {
-                        table.ajax.reload();
-                        let msg = data.data;
-                        console.log(msg)
+                var settings = {
+                    "url": "/api/theaters/"+ID,
+                    "method": "PUT",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                        "theaterNumber": THEATERNUM
+                    }),
+                };
+    
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    table.ajax.reload();
+                    if (response.status) {
+                        let msg = response.message;
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                }, "json")
+                });
+                $("#action").val("Add");
             }
+            clearForm();
         });
 
+      
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("./?api/theater/delete", {
-                id: uid
-            }, function(data, status) {
-                console.log(data)
-                if (data.status) {
-                    table.ajax.reload();
-                    let msg = data.data;
-                    console.log(msg)
+            var settings = {
+                "url": "/api/theaters/"+uid,
+                "method": "DELETE",
+                "timeout": 0
+            };
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                table.ajax.reload();
+                if (response.status) {
+                    let msg = response.message;
                     $("#msg-success").css('display', 'flex').text(msg)
                     $("#msg-failed").css('display', 'none')
                 } else {
-                    let msg = data.data;
+                    let msg = response.message;
                     console.log(msg)
                     $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                     $("#msg-success").css('display', 'none')
-                    $('#confirm-removal-modal').modal({
-                        show: false
-                    });
                 }
-            }, "json")
+            });
         })
-
-
-    })
+});

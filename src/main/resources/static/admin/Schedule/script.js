@@ -3,7 +3,7 @@ function fillEditForm(btn) {
         let tds = $(btn).closest('tr').find('td')
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
-        $.post("./?api/schedule/getbyid", {
+        $.post("/api/schedules/"+ID, {
             ID
         }, function(data, status) {
             var table = $('#table');
@@ -27,13 +27,13 @@ function fillEditForm(btn) {
             option.value = -1;
             option.innerText = "Chọn phòng chiếu";
             $('#theaterBox').append(option);
-            $.get("./?api/theater/getall", function(data, status) {
+            $.get("/api/theaters", function(data, status) {
                 var table = $('#table');
                 console.log(data)
                 data.data.forEach(function(object) {
                     var option = document.createElement('option');
-                    option.value = object.ID;
-                    option.innerText = "Phòng số " + object.THEATERNUM;
+                    option.value = object.id;
+                    option.innerText = "Phòng số " + object.theaterNumber;
                     $('#theaterBox').append(option);
                 });
             }, "json");
@@ -41,7 +41,7 @@ function fillEditForm(btn) {
         load_theater()
 
         var table = $('#dataTable').DataTable({
-            ajax: "./?api/schedule/getByTheater&theater_id=-1",
+            ajax: "/api/schedules/getByTheater/",
             columns: [{
                     data: 'id'
                 },
@@ -74,7 +74,7 @@ function fillEditForm(btn) {
 
 
         function load_ongoing_movie() {
-            $.get("./?api/movie/ongoing", function(data, status) {
+            $.get("/api/movies/ongoing", function(data, status) {
                 var table = $('#table');
                 console.log(data)
                 data.data.forEach(function(object) {
@@ -91,7 +91,7 @@ function fillEditForm(btn) {
         let jsonArrayObj = [{}];
         $('#theaterBox').change(function() {
             let theater_id = $('#theaterBox').val();
-            table.ajax.url("./?api/schedule/getByTheater&theater_id=" + theater_id).load();
+            table.ajax.url("/api/schedules/getByTheater/" + theater_id).load();
         })
 
 
@@ -116,7 +116,7 @@ function fillEditForm(btn) {
                 let action = $("#action").val();
                 if (action == "Add") {
                     // Tao lich chieu
-                    $.post("./?api/schedule/add", {
+                    $.post("/api/schedules/add", {
                         THEA_ID,
                         MOV_ID,
                         STARTTIME,
@@ -141,7 +141,7 @@ function fillEditForm(btn) {
                     }, "json")
                 } else {
                     let ID = $("#action").val();
-                    $.post("./?api/schedule/update", {
+                    $.post("/api/schedules/update", {
                         THEA_ID,
                         MOV_ID,
                         STARTTIME,
@@ -172,7 +172,7 @@ function fillEditForm(btn) {
 
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("./?api/schedule/delete", {
+            $.post("/api/schedules/delete", {
                 id: uid
             }, function(data, status) {
                 console.log(data)

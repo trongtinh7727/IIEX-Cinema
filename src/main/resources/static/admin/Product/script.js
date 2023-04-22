@@ -1,57 +1,45 @@
 function fillEditForm(btn) {
-    $("#addCinemaModalLabel").val("Update Cinema");
+    $("#addCinemaModalLabel").val("Update Product");
     let tds = $(btn).closest('tr').find('td');
     let ID = tds[0].innerHTML;
     $("#action").val(ID);
-    $.get("/api/movies/"+ID, {
+    $.get("/api/products/"+ID, {
     }, function(data, status) {
         var table = $('#table');
         console.log(data)
         // data.data.forEach(function(object) {
-            $('#TITLE').val(data.title)
-            $('#DIRECTOR').val(data.director)
-            $('#ACTORS').val(data.actors)
-            $('#GENRE').val(data.genre)
-            $('#STORY').val(data.story)
-            $('#DURATION').val(data.duration)
-            $('#OPENING_DAY').val( moment(data.opening_day).format("YYYY-MM-DD"))
-            $('#CLOSING_DAY').val( moment(data.closing_day).format("YYYY-MM-DD"))
-            $('#POSTER').val(data.poster)
-            $('#TRAILER').val(data.trailer)
+            $('#NAME').val(data.name)
+            $('#TYPE').val(data.type)
+            $('#PRICE').val(data.price)
+            $('#QUANTITY').val(data.quantity)
+            $('#EXPIRY_DATE').val(moment(data.expiry_date).format("YYYY-MM-DD"))
         // });
     }, "json");
 }
 $(document).ready(function() {
 
     var table = $('#dataTable').DataTable({
-        ajax: "/api/movies",
+        ajax: "/api/products",
+
         columns: [{
                 data: 'id'
             },
             {
-                data: 'title'
+                data: 'name'
             },
             {
-                data: 'director'
+                data: 'type'
             },
             {
-                data: 'actors'
+                data: 'price'
             },
             {
-                data: 'genre'
-            },
-            {
-                data: 'duration'
+                data: 'quantity'
             },
             {
                 data: null,
                 render: function(data, type, row) {
-                return moment(data.opening_day).format('MM/DD/YYYY');
-                }
-            },
-            {   data: null,
-                render: function(data, type, row) {
-                return moment(data.closing_day).format('MM/DD/YYYY');
+                return moment(data.expiry_date).format('MM/DD/YYYY');
                 }
             },
             {
@@ -65,39 +53,27 @@ $(document).ready(function() {
 
 
     $("#add").click(function() {
-        let TITLE = $('#TITLE').val()
-        let DIRECTOR = $('#DIRECTOR').val()
-        let ACTORS = $('#ACTORS').val()
-        let GENRE = $('#GENRE').val()
-        let STORY = $('#STORY').val()
-        let DURATION = $('#DURATION').val()
-        let OPENING_DAY = $('#OPENING_DAY').val()
-        let CLOSING_DAY = $('#CLOSING_DAY').val()
-        let POSTER = $('#POSTER').val()
-        let TRAILER = $('#TRAILER').val()
-
+        let NAME = $('#NAME').val()
+        let TYPE = $('#TYPE').val()
+        let PRICE = $('#PRICE').val()
+        let QUANTITY = $('#QUANTITY').val()
+        let EXPIRY_DATE = $('#EXPIRY_DATE').val()
         let action = $("#action").val();
 
         if (action == "Add") {
             var settings = {
-                "url": "/api/movies",
+                "url": "/api/products",
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
                     "Content-Type": "application/json"
                 },
                 "data": JSON.stringify({
-                    "title": TITLE,
-                    "genre": GENRE,
-                    "director": DIRECTOR,
-                    "actors": ACTORS,
-                    "duration": DURATION,
-                    "rating": 5,
-                    "story": STORY,
-                    "poster": POSTER,
-                    "opening_day": OPENING_DAY,
-                    "closing_day": CLOSING_DAY,
-                    "trailer": TRAILER
+                    "name": NAME,
+                    "type": TYPE,
+                    "price": PRICE,
+                    "quantity": QUANTITY,
+                    "expiry_date": EXPIRY_DATE
                 }),
             };
             $.ajax(settings).done(function (response) {
@@ -118,24 +94,18 @@ $(document).ready(function() {
         } else {
             let ID = $("#action").val();
             var settings = {
-                "url": "/api/movies/"+ID,
+                "url": "/api/products/"+ID,
                 "method": "PUT",
                 "timeout": 0,
                 "headers": {
                     "Content-Type": "application/json"
                 },
                 "data": JSON.stringify({
-                    "title": TITLE,
-                    "genre": GENRE,
-                    "director": DIRECTOR,
-                    "actors": ACTORS,
-                    "duration": DURATION,
-                    "rating": 5,
-                    "story": STORY,
-                    "poster": POSTER,
-                    "opening_day": OPENING_DAY,
-                    "closing_day": CLOSING_DAY,
-                    "trailer": TRAILER
+                    "name": NAME,
+                    "type": TYPE,
+                    "price": PRICE,
+                    "quantity": QUANTITY,
+                    "expiry_date": EXPIRY_DATE
                 }),
             };
 
@@ -161,7 +131,7 @@ $(document).ready(function() {
     $("#delete-button").on('click', function() {
         let uid = $('#delete-button').attr('uid');
         var settings = {
-            "url": "/api/movies/"+uid,
+            "url": "/api/products/"+uid,
             "method": "DELETE",
             "timeout": 0
         };
@@ -198,14 +168,9 @@ function confirmRemoval(btn) {
 }
 
 function clearForm() {
-    $('#TITLE').val("")
-    $('#DIRECTOR').val("")
-    $('#ACTORS').val("")
-    $('#GENRE').val("")
-    $('#STORY').val("")
-    $('#DURATION').val("")
-    $('#OPENING_DAY').val("")
-    $('#CLOSING_DAY').val("")
-    $('#POSTER').val("")
-    $('#TRAILER').val("")
+    $('#NAME').val("")
+    $('#TYPE').val("")
+    $('#PRICE').val("")
+    $('#QUANTITY').val("")
+    $('#EXPIRY_DATE').val("")
 }

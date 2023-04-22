@@ -38,4 +38,9 @@ public class AdminController {
     model.addAttribute("fragmentName", "Movie");
     return "Admin/dashboard";
   }
+  @GetMapping("/product")
+  public String productManager(Model model) {
+    model.addAttribute("fragmentName", "Product");
+    return "Admin/dashboard";
+  }
 }
