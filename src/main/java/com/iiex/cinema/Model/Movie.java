@@ -22,8 +22,6 @@ public class Movie {
   private String genre;
   private String director;
   private String actors;
-
-
   private int duration;
 
   private float rating;

@@ -1,5 +1,6 @@
 package com.iiex.cinema.Service.impl;
 
+import com.iiex.cinema.Model.Cinema;
 import com.iiex.cinema.Model.Movie;
 import com.iiex.cinema.Model.Theater;
 import com.iiex.cinema.Repository.TheaterRepository;
@@ -32,5 +33,10 @@ public class TheaterServiceImpl implements TheaterService {
     @Override
     public void delete(Long ID) {
         theaterRepository.deleteById(ID);
+    }
+
+    @Override
+    public List<Theater> findAllByCinema(Cinema cinema) {
+        return theaterRepository.findAllByCinema(cinema);
     }
 }

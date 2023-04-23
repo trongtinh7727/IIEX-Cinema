@@ -2,7 +2,6 @@ package com.iiex.cinema.Service;
 
 
 import com.iiex.cinema.DTO.ScheduleDTO;
-import com.iiex.cinema.Model.Product;
 import com.iiex.cinema.Model.Schedule;
 import com.iiex.cinema.Model.Theater;
 

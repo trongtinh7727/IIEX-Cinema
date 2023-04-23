@@ -2,10 +2,7 @@ package com.iiex.cinema.Controller;
 
 
 import com.iiex.cinema.Api.CustomResponse;
-import com.iiex.cinema.Model.Movie;
-import com.iiex.cinema.Model.Product;
 import com.iiex.cinema.Model.Theater;
-import com.iiex.cinema.Service.ProductService;
 import com.iiex.cinema.Service.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +22,7 @@ public class TheaterController {
     @GetMapping("")
     ResponseEntity<CustomResponse> all() {
         List<Theater> theaters = theaterService.findAllTheater();
-        CustomResponse<Product> response = new CustomResponse(true, theaters);
+        CustomResponse<Theater> response = new CustomResponse(true, theaters);
         return ResponseEntity.ok(response);
     }
     @PostMapping("")
@@ -48,7 +45,6 @@ public class TheaterController {
     ResponseEntity<CustomResponse> update(@RequestBody Theater newTheater, @PathVariable Long id){
         Theater theater = theaterService.findTheaterByID(id);
         theater.setTheaterNumber(newTheater.getTheaterNumber());
-
         theaterService.saveTheater(theater);
         CustomResponse<Theater> response = new CustomResponse(true,"Sửa thành công");
         return ResponseEntity.ok(response);

@@ -40,6 +40,16 @@ public class MovieServiceImpl implements MovieService {
   }
 
   @Override
+  public List<Movie> findAllUpcoming() {
+    return movieRepository.findUpcomingMovies();
+  }
+
+  @Override
+  public List<Movie> getMovieTrailer() {
+    return movieRepository.getMovieTrailer();
+  }
+
+  @Override
   public void delete(Long ID) {
     movieRepository.deleteById(ID);
   }

@@ -19,7 +19,7 @@ public class Theater {
     long id;
     private int theaterNumber;
     private int seatCount;
-    private int isShowing;
+//    private int isShowing;
 
     @OneToMany(mappedBy = "theater",cascade = CascadeType.ALL)
     @JsonIgnore
@@ -29,4 +29,8 @@ public class Theater {
     @JsonIgnore
     private Collection<Schedule> schedules;
 
+    @ManyToOne
+    @JoinColumn(name = "cinema_id")
+    @JsonIgnore
+    private Cinema cinema;
 }

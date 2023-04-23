@@ -3,10 +3,7 @@ package com.iiex.cinema.Controller;
 
 import com.iiex.cinema.Api.CustomResponse;
 import com.iiex.cinema.DTO.ScheduleDTO;
-import com.iiex.cinema.Model.Movie;
-import com.iiex.cinema.Model.Product;
 import com.iiex.cinema.Model.Schedule;
-import com.iiex.cinema.Service.ProductService;
 import com.iiex.cinema.Service.ScheduleService;
 import com.iiex.cinema.Service.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +31,8 @@ public class ScheduleController {
     }
     @PostMapping("")
     ResponseEntity<CustomResponse> getNewProduct(@RequestBody Schedule newSchedule) {
-        scheduleService.saveSchedule(newSchedule);
+        System.out.println(newSchedule.toString());
+            scheduleService.saveSchedule(newSchedule);
         CustomResponse<Schedule> response = new CustomResponse(true,"Thêm thành công");
         return ResponseEntity.ok(response);
     }

@@ -1,8 +1,6 @@
 package com.iiex.cinema.Controller;
 
 import com.iiex.cinema.Api.CustomResponse;
-import com.iiex.cinema.Model.Product;
-import com.iiex.cinema.Model.Role;
 import com.iiex.cinema.Model.User;
 import com.iiex.cinema.Repository.RoleRepository;
 import com.iiex.cinema.Service.UserService;

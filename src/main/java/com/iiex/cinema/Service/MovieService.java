@@ -16,5 +16,8 @@ public interface MovieService {
     Movie  saveMovie(Movie movie);
 
     List<Movie> findAllIsOnGoing();
+    List<Movie> findAllUpcoming();
+    List<Movie> getMovieTrailer();
+
     void delete(Long ID);
 }

@@ -3,8 +3,7 @@ function fillEditForm(btn) {
         let tds = $(btn).closest('tr').find('td')
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
-        $.post("/api/schedules/"+ID, {
-            ID
+        $.get("/api/schedules/"+ID, {
         }, function(data, status) {
             var table = $('#table');
             console.log(data)
@@ -41,7 +40,7 @@ function fillEditForm(btn) {
         load_theater()
 
         var table = $('#dataTable').DataTable({
-            ajax: "/api/schedules/getByTheater/",
+            ajax: "/api/schedules/getByTheater/0",
             columns: [{
                     data: 'id'
                 },
@@ -52,10 +51,10 @@ function fillEditForm(btn) {
                     data: 'duration'
                 },
                 {
-                    data: 'start_time'
+                    data: 'startTime'
                 },
                 {
-                    data: 'end_time'
+                    data: 'endTime'
                 },
                 {
                     data: null,
@@ -76,13 +75,13 @@ function fillEditForm(btn) {
         function load_ongoing_movie() {
             $.get("/api/movies/ongoing", function(data, status) {
                 var table = $('#table');
-                console.log(data)
+                console.log("ongoing : ",data)
                 data.data.forEach(function(object) {
                     var option = document.createElement('option');
                     var option = document.createElement('option');
-                    option.value = object.ID;
-                    option.dataset.duration = object.DURATION;
-                    option.innerText = object.TITLE;
+                    option.value = object.id;
+                    option.dataset.duration = object.duration;
+                    option.innerText = object.title;
                     $('#movieBox').append(option);
                 });
             }, "json");
@@ -101,6 +100,7 @@ function fillEditForm(btn) {
         $("#addStaff").click(function() {
 
             let THEA_ID = $('#theaterBox').val();
+            console.log(THEA_ID);
             if (THEA_ID == '-1') {
                 $("#msg-failed").css('display', 'flex').text("Vui lòng chọn rạp và phòng chiếu!")
                 $("#msg-success").css('display', 'none')
@@ -114,56 +114,120 @@ function fillEditForm(btn) {
                 const ENDTIME = end.toISOString();
                 let PRICE = $('#price').val();
                 let action = $("#action").val();
+                // if (action == "Add") {
+                //     // Tao lich chieu
+                //     $.post("/api/schedules/add", {
+                //         THEA_ID,
+                //         MOV_ID,
+                //         STARTTIME,
+                //         ENDTIME,
+                //         PRICE
+                //     }, function(data, status) {
+                //         console.log(data)
+                //         if (data.status) {
+                //             load_data();
+                //             $.fn.dataTable();
+                //             let msg = data.data;
+                //             schedule_id = msg.schedule_id;
+                //             console.log(schedule_id)
+                //             $("#msg-success").css('display', 'flex').text(msg.message)
+                //             $("#msg-failed").css('display', 'none')
+                //         } else {
+                //             let msg = data.data;
+                //             console.log(msg)
+                //             $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
+                //             $("#msg-success").css('display', 'none')
+                //         }
+                //     }, "json")
+                // } else {
+                //     let ID = $("#action").val();
+                //     $.post("/api/schedules/update", {
+                //         THEA_ID,
+                //         MOV_ID,
+                //         STARTTIME,
+                //         ENDTIME,
+                //         ID
+                //     }, function(data, status) {
+                //         console.log(data)
+                //         if (data.status) {
+                //             console.log("Okee")
+                //             load_data();
+                //             $.fn.dataTable();
+                //             let msg = data.data;
+                //             console.log(msg)
+                //             $("#msg-success").css('display', 'flex').text(msg)
+                //             $("#msg-failed").css('display', 'none')
+                //         } else {
+                //             let msg = data.data;
+                //             console.log(msg)
+                //             $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
+                //             $("#msg-success").css('display', 'none')
+                //         }
+                //     }, "json")
+                //     $("#action").val("Add");
+                // }
                 if (action == "Add") {
-                    // Tao lich chieu
-                    $.post("/api/schedules/add", {
-                        THEA_ID,
-                        MOV_ID,
-                        STARTTIME,
-                        ENDTIME,
-                        PRICE
-                    }, function(data, status) {
-                        console.log(data)
-                        if (data.status) {
-                            load_data();
-                            $.fn.dataTable();
-                            let msg = data.data;
-                            schedule_id = msg.schedule_id;
-                            console.log(schedule_id)
-                            $("#msg-success").css('display', 'flex').text(msg.message)
-                            $("#msg-failed").css('display', 'none')
-                        } else {
-                            let msg = data.data;
-                            console.log(msg)
-                            $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
-                            $("#msg-success").css('display', 'none')
-                        }
-                    }, "json")
-                } else {
-                    let ID = $("#action").val();
-                    $.post("/api/schedules/update", {
-                        THEA_ID,
-                        MOV_ID,
-                        STARTTIME,
-                        ENDTIME,
-                        ID
-                    }, function(data, status) {
-                        console.log(data)
-                        if (data.status) {
-                            console.log("Okee")
-                            load_data();
-                            $.fn.dataTable();
-                            let msg = data.data;
-                            console.log(msg)
+                    var settings = {
+                        "url": "/api/schedules",
+                        "method": "POST",
+                        "timeout": 0,
+                        "headers": {
+                            "Content-Type": "application/json"
+                        },
+                        "data": JSON.stringify({
+                            "theater_id": THEA_ID,
+                           "start_time" : STARTTIME,
+                           "end_time" : ENDTIME,
+                           "movie_id" : MOV_ID
+                        }),
+                    };
+                    console.log(settings.data);
+                    $.ajax(settings).done(function (response) {
+                        console.log(response);
+                        table.ajax.reload();
+                        if (response.status) {
+                            let msg = response.message;
                             $("#msg-success").css('display', 'flex').text(msg)
                             $("#msg-failed").css('display', 'none')
                         } else {
-                            let msg = data.data;
+                            let msg = response.message;
                             console.log(msg)
                             $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                             $("#msg-success").css('display', 'none')
                         }
-                    }, "json")
+                    });
+        
+                } else {
+                    let ID = $("#action").val();
+                    var settings = {
+                        "url": "/api/users/"+ID,
+                        "method": "PUT",
+                        "timeout": 0,
+                        "headers": {
+                            "Content-Type": "application/json"
+                        },
+                        "data": JSON.stringify({
+                            "theater_id": THEA_ID,
+                            "start_time" : STARTTIME,
+                            "end_time" : ENDTIME,
+                            "movie_id" : MOV_ID
+                        }),
+                    };
+        
+                    $.ajax(settings).done(function (response) {
+                        console.log(response);
+                        table.ajax.reload();
+                        if (response.status) {
+                            let msg = response.message;
+                            $("#msg-success").css('display', 'flex').text(msg)
+                            $("#msg-failed").css('display', 'none')
+                        } else {
+                            let msg = response.message;
+                            console.log(msg)
+                            $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
+                            $("#msg-success").css('display', 'none')
+                        }
+                    });
                     $("#action").val("Add");
                 }
             }

@@ -1,7 +1,7 @@
 package com.iiex.cinema.Service;
 
 
-import com.iiex.cinema.Model.Product;
+import com.iiex.cinema.Model.Cinema;
 import com.iiex.cinema.Model.Theater;
 
 import java.util.List;
@@ -14,4 +14,6 @@ public interface TheaterService {
     Theater  saveTheater(Theater movie);
 
     void delete(Long id);
+
+    List<Theater> findAllByCinema(Cinema cinema);
 }
