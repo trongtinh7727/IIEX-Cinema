@@ -11,7 +11,7 @@ import java.util.List;
 
 @RequestMapping("/api/combofoods")
 @RestController
-public class ComboFoodController {
+public class  ComboFoodController {
     @Autowired
     private ComboFoodService comboFoodService;
     ComboFoodController(ComboFoodService comboFoodService){
