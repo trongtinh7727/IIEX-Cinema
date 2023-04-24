@@ -16,10 +16,16 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
+    private User user;
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date created_at ;
 
+    private  double food_price;
+    private  double ticket_price;
     @OneToMany(mappedBy = "booking",cascade = CascadeType.ALL)
     @JsonIgnore
     private Collection<Ticket> tickets;

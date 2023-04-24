@@ -27,8 +27,7 @@ public class SeatController {
     SeatController(SeatService seatService){
         this.seatService = seatService;
     }
-
-    @GetMapping("/getByTheater")
+    @GetMapping("/getByTheater/{id}")
     ResponseEntity<CustomResponse> getByTheater(@PathVariable Long id){
         List<Seat> schedules = seatService.getByTheater(theaterService.findTheaterByID(id));
         CustomResponse<Seat> response = new CustomResponse(true, schedules);
