@@ -3,40 +3,51 @@
         let tds = $(btn).closest('tr').find('td')
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
-        $.get("/api/users/"+ID, {
+        $.post("./?api/client/getbyid", {
+            ID
         }, function(data, status) {
             var table = $('#table');
             console.log(data)
-            // data.data.forEach(function(object) {
-                $('#USERNAME').val(data.email)
+            data.data.forEach(function(object) {
+                $('#USERNAME').val(object.USERNAME)
                 $('.pass').hide();
-                $('#NAME').val(data.name)
-                $('#ADDRESS').val(data.address)
-                // $('#SALARY').val(data.salary)
-            // });
+                $('#FNAME').val(object.FIRSTNAME)
+                $('#LNAME').val(object.LASTNAME)
+                $('#BIRTHDAY').val(object.BIRTHDAY)
+                $('#PHONE').val(object.PHONE)
+                $('#ADDRESS').val(object.ADDRESS)
+            });
 
         }, "json");
     }
     $(document).ready(function() {
 
         var table = $('#dataTable').DataTable({
-            ajax: "/api/users",
+            ajax: "./?api/client/getall",
             columns: [{
-                    data: "id"
+                    data: "ID"
                 },
                 {
-                    data: "email"
+                    data: "USERNAME"
                 },
                 {
-                    data: "name"
+                    data: "PHONE"
                 },
                 {
-                    data: "address"
+                    data: null,
+                    render: function(data, type, row) {
+                        return data.FIRSTNAME + ' ' + data.LASTNAME;
+                    }
                 },
-                // {
-                //     data: "salary",
-                //     render: $.fn.dataTable.render.number(',', '.', 0, '$')
-                // },
+                {
+                    data: "SEX"
+                },
+                {
+                    data: "BIRTHDAY"
+                },
+                {
+                    data: "ADDRESS"
+                },
                 {
                     data: null,
                     render: function(data, type, row) {
@@ -47,84 +58,72 @@
         });
 
 
-        $("#add").click(function() {
-            let USERNAME  = $('#USERNAME').val()
-            $('.pass').hide();
-            // $('#FNAME').val(data.FIRSTNAME)
-            // $('#LNAME').val(data.LASTNAME)
-            let NAME =  $('#NAME').val()
+
+        $("#addStaff").click(function() {
+            let USERNAME = $('#USERNAME').val()
+            let FIRSTNAME = $('#FNAME').val()
+            let LASTNAME = $('#LNAME').val()
+            let SEX = $("#SEX").val() === "M" ? "nam" : "nữ"
+            let BIRTHDAY = $("#BIRTHDAY").val()
+            let PHONE = $('#PHONE').val()
             let ADDRESS = $('#ADDRESS').val()
-            // let SALARY = $('#SALARY').val()
+            let SALARY = $('#SALARY').val()
+            let ROLE = $("#ROLE").val()
             let action = $("#action").val();
-    
+            console.log(action);
             if (action == "Add") {
-                var settings = {
-                    "url": "/api/users",
-                    "method": "POST",
-                    "timeout": 0,
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "data": JSON.stringify({
-                       "email": USERNAME,
-                       "name" : NAME,
-                       "address" : ADDRESS,
-                       "salary" : null
-                    }),
-                };
-                $.ajax(settings).done(function (response) {
-                    console.log(response);
-                    table.ajax.reload();
-                    if (response.status) {
-                        let msg = response.message;
+                $.post("./?api/client/add", {
+                    USERNAME,
+                    FIRSTNAME,
+                    LASTNAME,
+                    SEX,
+                    BIRTHDAY,
+                    PHONE,
+                    ADDRESS,
+                    ROLE
+                }, function(data, status) {
+                    console.log(data)
+                    if (data.status) {
+                        table.ajax.reload();
+
+                        let msg = data.data;
+                        console.log(msg)
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = response.message;
+                        let msg = data.data;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                });
-    
+                }, "json")
             } else {
                 let ID = $("#action").val();
-                var settings = {
-                    "url": "/api/users/"+ID,
-                    "method": "PUT",
-                    "timeout": 0,
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "data": JSON.stringify({
-                        "title": TITLE,
-                        "genre": GENRE,
-                        "director": DIRECTOR,
-                        "actors": ACTORS,
-                        "duration": DURATION,
-                        "rating": 5,
-                        "story": STORY,
-                        "poster": POSTER,
-                        "opening_day": OPENING_DAY,
-                        "closing_day": CLOSING_DAY,
-                        "trailer": TRAILER
-                    }),
-                };
-    
-                $.ajax(settings).done(function (response) {
-                    console.log(response);
-                    table.ajax.reload();
-                    if (response.status) {
-                        let msg = response.message;
+                $.post("./?api/client/update", {
+                    FIRSTNAME,
+                    LASTNAME,
+                    SEX,
+                    BIRTHDAY,
+                    PHONE,
+                    ADDRESS,
+                    ROLE,
+                    ID
+                }, function(data, status) {
+                    console.log(data)
+                    if (data.status) {
+                        console.log("Okee")
+                        table.ajax.reload();
+                        let msg = data.data;
+                        console.log(msg)
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = response.message;
+                        let msg = data.data;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                });
+                }, "json")
                 $("#action").val("Add");
             }
             clearForm()
@@ -132,7 +131,7 @@
 
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("/api/users", {
+            $.post("./?api/client/delete", {
                 id: uid
             }, function(data, status) {
                 console.log(data)
@@ -159,7 +158,7 @@
     // hiện dialog xác nhận khi xóa
     function confirmRemoval(btn) {
         let tds = $(btn).closest('tr').find('td')
-        document.getElementById("student_name").innerHTML = tds[2].innerText;
+        document.getElementById("student_name").innerHTML = tds[3].innerText;
         console.log(tds[2].innerText)
         $('#delete-button').attr('uid', tds[0].innerHTML)
         var myModal = new bootstrap.Modal(document.getElementById("confirm-removal-modal"), {});

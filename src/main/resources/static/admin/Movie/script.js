@@ -29,6 +29,12 @@ $(document).ready(function() {
                 data: 'id'
             },
             {
+                    data: 'poster',
+                    render: function(data, type, row) {
+                        return '<img src="' + data + '" width="100"/>';
+                    }
+                },
+            {
                 data: 'title'
             },
             {

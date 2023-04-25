@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionDTO {
-    private int id;
+    private Long id;
     private String cinemaName;
     private String clientUsername;
     private String clientFirstName;

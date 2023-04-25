@@ -1,9 +1,10 @@
-function fillEditForm(btn) {
-        $("#addModalLabel").val("Update");
+    function fillEditForm(btn) {
+        $("#addModalLabel").text = "Update";
         let tds = $(btn).closest('tr').find('td')
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
-        $.get("/api/schedules/"+ID, {
+        $.post("./?api/schedule/getbyidv2", {
+            ID
         }, function(data, status) {
             var table = $('#table');
             console.log(data)
@@ -20,41 +21,57 @@ function fillEditForm(btn) {
 
     $(document).ready(function() {
 
-        function load_theater() {
-            $('#theaterBox').empty()
-            var option = document.createElement('option');
-            option.value = -1;
-            option.innerText = "Chọn phòng chiếu";
-            $('#theaterBox').append(option);
-            $.get("/api/theaters", function(data, status) {
-                var table = $('#table');
+        function load_cinema() {
+            $.get("./?api/cinema/getall", function(data, status) {
                 console.log(data)
                 data.data.forEach(function(object) {
                     var option = document.createElement('option');
-                    option.value = object.id;
-                    option.innerText = "Phòng số " + object.theaterNumber;
-                    $('#theaterBox').append(option);
+                    option.value = object.ID;
+                    option.innerText = object.NAME;
+                    $('#cinemaBox').append(option);
                 });
             }, "json");
         }
-        load_theater()
+        load_cinema();
+
+
+        function load_showroom(cinema_id) {
+            $('#showroomBox').empty()
+            var option = document.createElement('option');
+            option.value = -1;
+            option.innerText = "Chọn phòng chiếu";
+            $('#showroomBox').append(option);
+            $.get("./?api/showroom/getByCinema&cinema_id=" + cinema_id, function(data, status) {
+                console.log(data)
+                data.data.forEach(function(object) {
+                    var option = document.createElement('option');
+                    option.value = object.ID;
+                    option.innerText = "Phòng số " + object.SHOWROOMNUM;
+                    $('#showroomBox').append(option);
+                });
+            }, "json");
+        }
+        $('#cinemaBox').change(function() {
+            load_showroom($('#cinemaBox').val());
+        })
+
 
         var table = $('#dataTable').DataTable({
-            ajax: "/api/schedules/getByTheater/0",
+            ajax: "./?api/schedule/getByShowroom&showroom_id=-1",
             columns: [{
-                    data: 'id'
+                    data: 'ID'
                 },
                 {
-                    data: 'title'
+                    data: 'TITLE'
                 },
                 {
-                    data: 'duration'
+                    data: 'DURATION'
                 },
                 {
-                    data: 'startTime'
+                    data: 'STARTTIME'
                 },
                 {
-                    data: 'endTime'
+                    data: 'ENDTIME'
                 },
                 {
                     data: null,
@@ -73,35 +90,30 @@ function fillEditForm(btn) {
 
 
         function load_ongoing_movie() {
-            $.get("/api/movies/ongoing", function(data, status) {
-                var table = $('#table');
-                console.log("ongoing : ",data)
-                data.data.forEach(function(object) {
-                    var option = document.createElement('option');
-                    var option = document.createElement('option');
-                    option.value = object.id;
-                    option.dataset.duration = object.duration;
-                    option.innerText = object.title;
-                    $('#movieBox').append(option);
-                });
-            }, "json");
+            $.get("./?api/movie/ongoing",
+                function(data, status) {
+                    console.log(data)
+                    data.data.forEach(function(object) {
+                        var option = document.createElement('option');
+                        option.value = object.ID;
+                        option.dataset.duration = object.DURATION;
+                        option.innerText = object.TITLE;
+                        $('#movieBox').append(option);
+                    });
+                }, "json");
         }
         load_ongoing_movie();
         let jsonArrayObj = [{}];
-        $('#theaterBox').change(function() {
-            let theater_id = $('#theaterBox').val();
-            table.ajax.url("/api/schedules/getByTheater/" + theater_id).load();
+        $('#showroomBox').change(function() {
+            let showroom_id = $('#showroomBox').val();
+            table.ajax.url("./?api/schedule/getByShowroom&showroom_id=" + showroom_id).load();
         })
-
-
-
 
 
         $("#addStaff").click(function() {
 
-            let THEA_ID = $('#theaterBox').val();
-            console.log(THEA_ID);
-            if (THEA_ID == '-1') {
+            let SHOWROOM_ID = $('#showroomBox').val();
+            if (SHOWROOM_ID == '-1') {
                 $("#msg-failed").css('display', 'flex').text("Vui lòng chọn rạp và phòng chiếu!")
                 $("#msg-success").css('display', 'none')
             } else {
@@ -114,120 +126,56 @@ function fillEditForm(btn) {
                 const ENDTIME = end.toISOString();
                 let PRICE = $('#price').val();
                 let action = $("#action").val();
-                // if (action == "Add") {
-                //     // Tao lich chieu
-                //     $.post("/api/schedules/add", {
-                //         THEA_ID,
-                //         MOV_ID,
-                //         STARTTIME,
-                //         ENDTIME,
-                //         PRICE
-                //     }, function(data, status) {
-                //         console.log(data)
-                //         if (data.status) {
-                //             load_data();
-                //             $.fn.dataTable();
-                //             let msg = data.data;
-                //             schedule_id = msg.schedule_id;
-                //             console.log(schedule_id)
-                //             $("#msg-success").css('display', 'flex').text(msg.message)
-                //             $("#msg-failed").css('display', 'none')
-                //         } else {
-                //             let msg = data.data;
-                //             console.log(msg)
-                //             $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
-                //             $("#msg-success").css('display', 'none')
-                //         }
-                //     }, "json")
-                // } else {
-                //     let ID = $("#action").val();
-                //     $.post("/api/schedules/update", {
-                //         THEA_ID,
-                //         MOV_ID,
-                //         STARTTIME,
-                //         ENDTIME,
-                //         ID
-                //     }, function(data, status) {
-                //         console.log(data)
-                //         if (data.status) {
-                //             console.log("Okee")
-                //             load_data();
-                //             $.fn.dataTable();
-                //             let msg = data.data;
-                //             console.log(msg)
-                //             $("#msg-success").css('display', 'flex').text(msg)
-                //             $("#msg-failed").css('display', 'none')
-                //         } else {
-                //             let msg = data.data;
-                //             console.log(msg)
-                //             $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
-                //             $("#msg-success").css('display', 'none')
-                //         }
-                //     }, "json")
-                //     $("#action").val("Add");
-                // }
                 if (action == "Add") {
-                    var settings = {
-                        "url": "/api/schedules",
-                        "method": "POST",
-                        "timeout": 0,
-                        "headers": {
-                            "Content-Type": "application/json"
-                        },
-                        "data": JSON.stringify({
-                            "theater_id": THEA_ID,
-                           "start_time" : STARTTIME,
-                           "end_time" : ENDTIME,
-                           "movie_id" : MOV_ID
-                        }),
-                    };
-                    console.log(settings.data);
-                    $.ajax(settings).done(function (response) {
-                        console.log(response);
-                        table.ajax.reload();
-                        if (response.status) {
-                            let msg = response.message;
-                            $("#msg-success").css('display', 'flex').text(msg)
+                    // Tao lich chieu
+                    $.post("./?api/schedule/add", {
+                        SHOWROOM_ID,
+                        MOV_ID,
+                        STARTTIME,
+                        ENDTIME,
+                        PRICE
+                    }, function(data, status) {
+                        console.log(data)
+                        if (data.status) {
+                            table.ajax.reload();
+
+                            let msg = data.data;
+                            schedule_id = msg.schedule_id;
+                            console.log(schedule_id)
+                            $("#msg-success").css('display', 'flex').text(msg.message)
                             $("#msg-failed").css('display', 'none')
                         } else {
-                            let msg = response.message;
+                            let msg = data.data;
                             console.log(msg)
                             $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                             $("#msg-success").css('display', 'none')
                         }
-                    });
-        
+                    }, "json")
                 } else {
                     let ID = $("#action").val();
-                    var settings = {
-                        "url": "/api/users/"+ID,
-                        "method": "PUT",
-                        "timeout": 0,
-                        "headers": {
-                            "Content-Type": "application/json"
-                        },
-                        "data": JSON.stringify({
-                            "theater_id": THEA_ID,
-                            "start_time" : STARTTIME,
-                            "end_time" : ENDTIME,
-                            "movie_id" : MOV_ID
-                        }),
-                    };
-        
-                    $.ajax(settings).done(function (response) {
-                        console.log(response);
-                        table.ajax.reload();
-                        if (response.status) {
-                            let msg = response.message;
+                    $.post("./?api/schedule/update", {
+                        SHOWROOM_ID,
+                        MOV_ID,
+                        STARTTIME,
+                        ENDTIME,
+                        ID
+                    }, function(data, status) {
+                        console.log(data)
+                        if (data.status) {
+                            console.log("Okee")
+                            table.ajax.reload();
+
+                            let msg = data.data;
+                            console.log(msg)
                             $("#msg-success").css('display', 'flex').text(msg)
                             $("#msg-failed").css('display', 'none')
                         } else {
-                            let msg = response.message;
+                            let msg = data.data;
                             console.log(msg)
                             $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                             $("#msg-success").css('display', 'none')
                         }
-                    });
+                    }, "json")
                     $("#action").val("Add");
                 }
             }
@@ -236,13 +184,12 @@ function fillEditForm(btn) {
 
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("/api/schedules/delete", {
+            $.post("./?api/schedule/delete", {
                 id: uid
             }, function(data, status) {
                 console.log(data)
                 if (data.status) {
-                    load_data();
-                    $.fn.dataTable();
+                    table.ajax.reload();
                     let msg = data.data;
                     console.log(msg)
                     $("#msg-success").css('display', 'flex').text(msg)
@@ -258,34 +205,6 @@ function fillEditForm(btn) {
                 }
             }, "json")
         })
-
-
-        $("#searchBarInput").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#myTable tr").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-
-        // Pagination button
-        $.fn.paginationButtons = function() {
-            var buttons_text = `<li class="page-item"><a class="page-link" onClick="javascript:$.fn.prevPage();" href="#">Previous</a></li>`;
-            var active = "";
-            for (var i = 1; i <= totalPage; i++) {
-                if (i == 1) {
-                    active = "active";
-                } else {
-                    active = "";
-                }
-                buttons_text = buttons_text + `<li class="page-item"><a id="page_index` + i + `" onClick="javascript:$.fn.indexPage(` + i + `);" class="page-link page_index ` + active + `" href="#">` + i + `</a></li>`;
-            }
-            buttons_text = buttons_text + `<li><a class="page-link" href="#" onClick="javascript:$.fn.nextPage();">Next</a></li>`;
-            $(".pagination-buttons").text("");
-            $(".pagination-buttons").append(buttons_text);
-        }
-
-        $.fn.paginationButtons();
-
     });
 
 
@@ -305,4 +224,3 @@ function fillEditForm(btn) {
         $("#email").val("");
         $("#phone").val("");
     }
-    $(document).ready(function() {});

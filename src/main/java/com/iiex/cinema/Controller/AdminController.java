@@ -38,9 +38,25 @@ public class AdminController {
     model.addAttribute("fragmentName", "Movie");
     return "Admin/dashboard";
   }
-  @GetMapping("/product")
-  public String productManager(Model model) {
-    model.addAttribute("fragmentName", "Product");
+  @GetMapping("/client")
+  public String clientManager(Model model) {
+    model.addAttribute("fragmentName", "Client");
+    return "Admin/dashboard";
+  }
+
+  @GetMapping("/combo")
+  public String comboManager(Model model) {
+    model.addAttribute("fragmentName", "Combo");
+    return "Admin/dashboard";
+  }
+  @GetMapping("/revenue")
+  public String revenueManager(Model model) {
+    model.addAttribute("fragmentName", "Revenue");
+    return "Admin/dashboard";
+  }
+  @GetMapping("/transaction")
+  public String transactionManager(Model model) {
+    model.addAttribute("fragmentName", "Transaction");
     return "Admin/dashboard";
   }
 }
