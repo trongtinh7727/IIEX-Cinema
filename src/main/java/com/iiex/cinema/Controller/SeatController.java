@@ -33,5 +33,5 @@ public class SeatController {
         CustomResponse<Seat> response = new CustomResponse(true, schedules);
         return ResponseEntity.ok(response);
     }
-
+    
 }

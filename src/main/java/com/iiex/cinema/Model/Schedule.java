@@ -16,11 +16,11 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "startTime")
+    @Column(name = "start_time")
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date startTime;
 
-    @Column(name = "endTime")
+    @Column(name = "end_time")
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date endTime;
 

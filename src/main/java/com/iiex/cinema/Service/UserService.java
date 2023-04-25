@@ -21,4 +21,5 @@ public interface UserService  {
     String getCurrentUsername();
     User findById(Long id);
     void delete(Long id);
+    User update(User user);
 }

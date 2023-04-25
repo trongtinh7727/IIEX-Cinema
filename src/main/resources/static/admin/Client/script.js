@@ -3,50 +3,37 @@
         let tds = $(btn).closest('tr').find('td')
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
-        $.post("./?api/client/getbyid", {
-            ID
+        $.get("/api/users/"+ID, {
         }, function(data, status) {
             var table = $('#table');
             console.log(data)
-            data.data.forEach(function(object) {
-                $('#USERNAME').val(object.USERNAME)
+            // data.data.forEach(function(object) {
+                $('#EMAIL').val(data.email)
                 $('.pass').hide();
-                $('#FNAME').val(object.FIRSTNAME)
-                $('#LNAME').val(object.LASTNAME)
-                $('#BIRTHDAY').val(object.BIRTHDAY)
-                $('#PHONE').val(object.PHONE)
-                $('#ADDRESS').val(object.ADDRESS)
-            });
+                $('#NAME').val(data.name)
+                $('#ADDRESS').val(data.address)
+            // });
 
         }, "json");
     }
     $(document).ready(function() {
 
         var table = $('#dataTable').DataTable({
-            ajax: "./?api/client/getall",
+            ajax: "/api/users",
             columns: [{
-                    data: "ID"
+                    data: "id"
                 },
                 {
-                    data: "USERNAME"
+                    data: "email"
                 },
                 {
-                    data: "PHONE"
+                    data : "name"
                 },
                 {
-                    data: null,
-                    render: function(data, type, row) {
-                        return data.FIRSTNAME + ' ' + data.LASTNAME;
-                    }
+                    data: "address"
                 },
                 {
-                    data: "SEX"
-                },
-                {
-                    data: "BIRTHDAY"
-                },
-                {
-                    data: "ADDRESS"
+                    data: "created"
                 },
                 {
                     data: null,
@@ -56,60 +43,29 @@
                 }
             ]
         });
-
-
-
         $("#addStaff").click(function() {
-            let USERNAME = $('#USERNAME').val()
-            let FIRSTNAME = $('#FNAME').val()
-            let LASTNAME = $('#LNAME').val()
-            let SEX = $("#SEX").val() === "M" ? "nam" : "nữ"
-            let BIRTHDAY = $("#BIRTHDAY").val()
-            let PHONE = $('#PHONE').val()
             let ADDRESS = $('#ADDRESS').val()
-            let SALARY = $('#SALARY').val()
-            let ROLE = $("#ROLE").val()
+            let FIRSTNAME = $('#NAME').val();
+            let EMAIL =  $('#EMAIL').val();
             let action = $("#action").val();
             console.log(action);
             if (action == "Add") {
-                $.post("./?api/client/add", {
-                    USERNAME,
-                    FIRSTNAME,
-                    LASTNAME,
-                    SEX,
-                    BIRTHDAY,
-                    PHONE,
-                    ADDRESS,
-                    ROLE
-                }, function(data, status) {
-                    console.log(data)
-                    if (data.status) {
-                        table.ajax.reload();
-
-                        let msg = data.data;
-                        console.log(msg)
-                        $("#msg-success").css('display', 'flex').text(msg)
-                        $("#msg-failed").css('display', 'none')
-                    } else {
-                        let msg = data.data;
-                        console.log(msg)
-                        $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
-                        $("#msg-success").css('display', 'none')
-                    }
-                }, "json")
-            } else {
-                let ID = $("#action").val();
-                $.post("./?api/client/update", {
-                    FIRSTNAME,
-                    LASTNAME,
-                    SEX,
-                    BIRTHDAY,
-                    PHONE,
-                    ADDRESS,
-                    ROLE,
-                    ID
-                }, function(data, status) {
-                    console.log(data)
+                var settings = {
+                    "url": "/api/users",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                      "name": FIRSTNAME,
+                      "email": EMAIL,
+                      "address": ADDRESS,
+                    }),
+                  };
+                  
+                  $.ajax(settings).done(function (response) {
+                    console.log(response);
                     if (data.status) {
                         console.log("Okee")
                         table.ajax.reload();
@@ -123,7 +79,41 @@
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                }, "json")
+                  });
+            } else {
+                let ID = $("#action").val();
+                var settings = {
+                    "url": "/api/users/"+ID,
+                    "method": "PUT",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                      "id": ID,
+                      "name": FIRSTNAME ,
+                      "email": EMAIL,
+                      "address": ADDRESS
+                    }),
+                  };
+                  
+                  $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    if (data.status) {
+                        console.log("Okee")
+                        table.ajax.reload();
+                        let msg = data.data;
+                        console.log(msg)
+                        $("#msg-success").css('display', 'flex').text(msg)
+                        $("#msg-failed").css('display', 'none')
+                    } else {
+                        let msg = data.data;
+                        console.log(msg)
+                        $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
+                        $("#msg-success").css('display', 'none')
+                    }
+                  });
+               
                 $("#action").val("Add");
             }
             clearForm()
@@ -131,26 +121,26 @@
 
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("./?api/client/delete", {
-                id: uid
-            }, function(data, status) {
-                console.log(data)
-                if (data.status) {
-                    table.ajax.reload();
-                    let msg = data.data;
-                    console.log(msg)
+            var settings = {
+                "url": "/api/users/"+uid,
+                "method": "DELETE",
+                "timeout": 0
+            };
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                table.ajax.reload();
+                if (response.status) {
+                    let msg = response.message;
                     $("#msg-success").css('display', 'flex').text(msg)
                     $("#msg-failed").css('display', 'none')
                 } else {
-                    let msg = data.data;
+                    let msg = response.message;
                     console.log(msg)
                     $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                     $("#msg-success").css('display', 'none')
-                    $('#confirm-removal-modal').modal({
-                        show: false
-                    });
                 }
-            }, "json")
+    
+            });
         })
     });
 
@@ -169,12 +159,8 @@
     })
 
     function clearForm() {
-        $('#USERNAME').val("")
-        $('#FNAME').val("")
-        $('#LNAME').val("")
-        $('#BIRTHDAY').val("")
-        $('#PHONE').val("")
+        $('#EMAIL').val("")
+        $('#NAME').val("")
         $('#ADDRESS').val("")
-        $('#SALARY').val("")
     }
-    $(document).ready(function() {});
+    

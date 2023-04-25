@@ -19,7 +19,6 @@ public class Theater {
     long id;
     private int theaterNumber;
     private int seatCount;
-//    private int isShowing;
 
     @OneToMany(mappedBy = "theater",cascade = CascadeType.ALL)
     @JsonIgnore

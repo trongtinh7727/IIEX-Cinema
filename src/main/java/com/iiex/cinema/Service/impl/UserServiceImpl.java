@@ -39,11 +39,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUser(UserDto userDto) {
         User user = new User();
-        user.setName(userDto.getFirstName() + " " + userDto.getLastName());
+        user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
-
+        user.setAddress(userDto.getAddress());
+        user.setCreated(userDto.getCreated());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        Role role = roleRepository.findByName("ROLE_ADMIN");
+        Role role = roleRepository.findByName("USER");
         if(role == null){
             role = checkRoleExist();
         }
@@ -74,12 +75,18 @@ public class UserServiceImpl implements UserService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth.getName();
     }
-
     @Override
     public User findById(Long id) {
         return userRepository.findById(id).get();
     }
-
+    @Override
+    public User update(User user) {
+        User Old_user = userRepository.findById(user.getId()).get();
+        Old_user.setEmail(user.getEmail());
+        Old_user.setName(user.getName());
+        Old_user.setAddress(user.getAddress());
+        return userRepository.save(Old_user);
+    }
     @Override
     public void delete(Long id) {
         userRepository.deleteById(id);
@@ -87,16 +94,14 @@ public class UserServiceImpl implements UserService {
 
     private UserDto convertEntityToDto(User user){
         UserDto userDto = new UserDto();
-        String[] name = user.getName().split(" ");
-        userDto.setFirstName(name[0]);
-        userDto.setLastName(name[1]);
+        userDto.setName(user.getName());
         userDto.setEmail(user.getEmail());
         return userDto;
     }
 
     private Role checkRoleExist() {
         Role role = new Role();
-        role.setName("ROLE_ADMIN");
+        role.setName("ADMIN");
         return roleRepository.save(role);
     }
 }

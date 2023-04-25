@@ -138,7 +138,6 @@
                         console.log(data)
                         if (data.status) {
                             table.ajax.reload();
-
                             let msg = data.data;
                             schedule_id = msg.schedule_id;
                             console.log(schedule_id)

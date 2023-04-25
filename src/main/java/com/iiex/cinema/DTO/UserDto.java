@@ -1,6 +1,9 @@
 package com.iiex.cinema.DTO;
 
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,12 +17,16 @@ public class UserDto {
 
     private Long id;
 
-    private String firstName;
-
-    private String lastName;
+    private String name;
 
     private String email;
 
     private String password;
+
+    private String Address;
+
+    @Column(name = "created")
+    @Temporal(TemporalType.TIMESTAMP)
+    private java.util.Date created;
 
 }
