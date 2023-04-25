@@ -3,7 +3,6 @@ package com.iiex.cinema.Service.impl;
 import com.iiex.cinema.DTO.ScheduleDTO;
 import com.iiex.cinema.Model.Schedule;
 import com.iiex.cinema.Model.Theater;
-import com.iiex.cinema.Repository.ProductRepository;
 import com.iiex.cinema.Repository.ScheduleRepository;
 import com.iiex.cinema.Service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;

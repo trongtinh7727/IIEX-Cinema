@@ -13,7 +13,6 @@ public class ScheduleDTO  {
     private long ID;
     private String Title;
     private int Duration;
-
     private java.util.Date startTime;
     private java.util.Date endTime;
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Collection;
+import java.util.List;
 
 import lombok.*;
 
@@ -21,11 +22,14 @@ public class User {
   private String email;
   private String address;
   private String password;
+
   @Column(name = "created")
   @Temporal(TemporalType.TIMESTAMP)
   private java.util.Date created;
 
-
+  @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+  @JsonIgnore
+  private List<Booking> bookings;
 
   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @EqualsAndHashCode.Exclude

@@ -1,7 +1,6 @@
 package com.iiex.cinema;
 
 import com.iiex.cinema.Service.MovieService;
-import com.iiex.cinema.Service.ProductService;
 import com.iiex.cinema.Service.ScheduleService;
 import com.iiex.cinema.Service.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,6 @@ public class CinemaApplication implements CommandLineRunner {
     private MovieService movieService;
 
     @Autowired
-    private ProductService productService;
-
-    @Autowired
     private ScheduleService scheduleService;
     @Autowired
     private TheaterService theaterService;
@@ -29,6 +25,6 @@ public class CinemaApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 //        movieService.finAllMovies().forEach(p -> System.out.println(p.getClosing_day()));
-        scheduleService.findAllScheduleByTheater(theaterService.findTheaterByID(Long.valueOf(2))).forEach(p-> System.out.println(p.getTitle()));
+//        scheduleService.findAllScheduleByTheater(theaterService.findTheaterByID(Long.valueOf(2))).forEach(p-> System.out.println(p.getTitle()));
     }
 }

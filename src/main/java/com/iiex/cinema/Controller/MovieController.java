@@ -33,6 +33,12 @@ public class MovieController {
         CustomResponse<Movie> response = new CustomResponse(true, movies);
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/upcoming")
+    ResponseEntity<CustomResponse> allUpcoming() {
+        List<Movie> movies = movieService.findAllUpcoming();
+        CustomResponse<Movie> response = new CustomResponse(true, movies);
+        return ResponseEntity.ok(response);
+    }
     @PostMapping("")
     ResponseEntity<CustomResponse> newMovie(@RequestBody Movie newMovie) {
         movieService.saveMovie(newMovie);
