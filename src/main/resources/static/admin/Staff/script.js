@@ -3,7 +3,7 @@
         let tds = $(btn).closest('tr').find('td')
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
-        $.get("/api/users/"+ID, {
+        $.get("/api/staffs/"+ID, {
         }, function(data, status) {
             var table = $('#table');
             console.log(data)
@@ -20,7 +20,7 @@
     $(document).ready(function() {
 
         var table = $('#dataTable').DataTable({
-            ajax: "/api/users",
+            ajax: "/api/staffs",
             columns: [{
                     data: "id"
                 },
@@ -33,10 +33,9 @@
                 {
                     data: "address"
                 },
-                // {
-                //     data: "salary",
-                //     render: $.fn.dataTable.render.number(',', '.', 0, '$')
-                // },
+                {
+                    data: "created"
+                },
                 {
                     data: null,
                     render: function(data, type, row) {
@@ -47,7 +46,7 @@
         });
 
 
-        $("#add").click(function() {
+        $("#addStaff").click(function() {
             let USERNAME  = $('#USERNAME').val()
             $('.pass').hide();
             // $('#FNAME').val(data.FIRSTNAME)
@@ -59,7 +58,7 @@
     
             if (action == "Add") {
                 var settings = {
-                    "url": "/api/users",
+                    "url": "/api/staffs",
                     "method": "POST",
                     "timeout": 0,
                     "headers": {
@@ -90,24 +89,18 @@
             } else {
                 let ID = $("#action").val();
                 var settings = {
-                    "url": "/api/users/"+ID,
+                    "url": "/api/staffs/"+ID,
                     "method": "PUT",
                     "timeout": 0,
                     "headers": {
                         "Content-Type": "application/json"
                     },
                     "data": JSON.stringify({
-                        "title": TITLE,
-                        "genre": GENRE,
-                        "director": DIRECTOR,
-                        "actors": ACTORS,
-                        "duration": DURATION,
-                        "rating": 5,
-                        "story": STORY,
-                        "poster": POSTER,
-                        "opening_day": OPENING_DAY,
-                        "closing_day": CLOSING_DAY,
-                        "trailer": TRAILER
+                        "id":ID,
+                        "email": USERNAME,
+                        "name" : NAME,
+                        "address" : ADDRESS,
+                        "salary" : null
                     }),
                 };
     
@@ -132,7 +125,7 @@
 
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("/api/users", {
+            $.post("/api/staffs", {
                 id: uid
             }, function(data, status) {
                 console.log(data)

@@ -45,7 +45,7 @@ public class AuthController {
             model.addAttribute("user", user);
             return "authications/register";
         }
-        userService.saveUser(user);
+        userService.saveUser(user,"USER");
         return "redirect:/register?success";
     }
 

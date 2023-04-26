@@ -23,7 +23,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         for (Schedule schedule:schedules) {
             Movie movie = schedule.getMovie();
             ShowRoom showRoom = schedule.getShowRoom();
-
             scheduleDTOS.add(new ScheduleDTO(schedule.getId(),movie.getTitle(),movie.getDuration(),schedule.getStartTime(), schedule.getEndTime()));
         }
         return scheduleDTOS;

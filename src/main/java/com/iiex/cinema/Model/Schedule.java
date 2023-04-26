@@ -31,7 +31,7 @@ public class Schedule {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "theater_id")
+    @JoinColumn(name = "showroom_id")
     private ShowRoom showRoom;
 
     @OneToMany(mappedBy = "schedule")

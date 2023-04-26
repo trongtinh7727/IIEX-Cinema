@@ -11,11 +11,11 @@ import com.iiex.cinema.Model.User;
 import java.util.List;
 
 public interface UserService  {
-    void saveUser(UserDto userDto);
-
+    void saveUser(UserDto userDto,String NameRole);
+    void saveAdmin(UserDto userDto);
     User findByEmail(String email);
 
-    List<UserDto> findAllUsers();
+    List<UserDto> findAllUsers(String NameRole);
 
     List<User> findAllUsers(Role role);
     String getCurrentUsername();

@@ -14,10 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,21 +32,25 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
     @Override
-    public void saveUser(UserDto userDto) {
+    public void saveUser(UserDto userDto,String NameRole) {
         User user = new User();
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
         user.setAddress(userDto.getAddress());
-        user.setCreated(userDto.getCreated());
+        user.setCreated(new Date());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        Role role = roleRepository.findByName("USER");
+        Role role = roleRepository.findByName(NameRole);
         if(role == null){
-            role = checkRoleExist();
+            role = checkRoleExist(NameRole);
         }
         user.setRoles(Arrays.asList(role));
         userRepository.save(user);
+    }
+
+    @Override
+    public void saveAdmin(UserDto userDto) {
+
     }
 
     @Override
@@ -58,8 +59,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findAllUsers() {
-        List<User> users = userRepository.findAll();
+    public List<UserDto> findAllUsers(String NameRole) {
+        List<User> users = userRepository.findAllByRoles(roleRepository.findByName(NameRole));
         return users.stream().map((user) -> convertEntityToDto(user))
                 .collect(Collectors.toList());
     }
@@ -68,8 +69,6 @@ public class UserServiceImpl implements UserService {
     public List<User> findAllUsers(Role role) {
         return userRepository.findAllByRoles(role);
     }
-
-
     @Override
     public String getCurrentUsername() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -93,7 +92,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         User user = userRepository.findById(id).get();
-
         userRepository.delete(user);
     }
 
@@ -104,9 +102,9 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    private Role checkRoleExist() {
+    private Role checkRoleExist(String NameRole) {
         Role role = new Role();
-        role.setName("ADMIN");
+        role.setName(NameRole);
         return roleRepository.save(role);
     }
 }

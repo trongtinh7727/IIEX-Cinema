@@ -18,6 +18,8 @@
     }
     $(document).ready(function() {
 
+
+
         var table = $('#dataTable').DataTable({
             ajax: "/api/users",
             columns: [{
@@ -43,10 +45,10 @@
                 }
             ]
         });
-        $("#addStaff").click(function() {
-            let ADDRESS = $('#ADDRESS').val()
-            let FIRSTNAME = $('#NAME').val();
-            let EMAIL =  $('#EMAIL').val();
+        $("#add").click(function() {
+            let ADDRESS = $("#ADDRESS").val()
+            let FIRSTNAME = $("#NAME").val();
+            let EMAIL =  $("#EMAIL").val();
             let action = $("#action").val();
             console.log(action);
             if (action == "Add") {

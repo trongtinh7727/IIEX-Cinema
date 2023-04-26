@@ -49,49 +49,70 @@ function fillEditForm(btn) {
             let action = $("#action").val();
 
             if (action == "Add") {
-                $.post("/api/cinemas/add", {
-                    NAME,
-                    PHONE,
-                    ADDRESS
-                }, function(data, status) {
-                    console.log(data)
-                    if (data.status) {
+                var settings = {
+                    "url": "/api/cinemas",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                      "name": NAME,
+                      "phone": PHONE,
+                      "address": ADDRESS
+                    }),
+                  };
+                  
+                  $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    if (response.status) {
                         console.log("Okee")
                         table.ajax.reload();
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                }, "json")
+                  });
             } else {
                 let ID = $("#action").val();
-                $.post("./?api/cinema/update", {
-                    NAME,
-                    PHONE,
-                    ADDRESS,
-                    ID
-                }, function(data, status) {
-                    console.log(data)
-                    if (data.status) {
+                var settings = {
+                    "url": "/api/cinemas/"+ID,
+                    "method": "PUT",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                      "id": ID,
+                      "name": NAME,
+                      "phone": PHONE,
+                      "address": ADDRESS,
+                    }),
+                  };
+                  
+                  $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    if (response.status) {
                         console.log("Okee")
                         table.ajax.reload();
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                }, "json")
+                  });
+               
                 $("#action").val("Add");
             }
             clearForm()
@@ -100,7 +121,7 @@ function fillEditForm(btn) {
 
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("./?api/cinema/delete", {
+            $.post("/api/cinemas", {
                 id: uid
             }, function(data, status) {
                 console.log(data)
