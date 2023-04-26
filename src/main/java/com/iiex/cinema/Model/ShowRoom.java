@@ -7,26 +7,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "theater")
-public class Theater {
+@Table(name = "showroom")
+public class ShowRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
     private int theaterNumber;
     private int seatCount;
 
-    @OneToMany(mappedBy = "theater",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "showRoom",cascade = CascadeType.ALL)
     @JsonIgnore
-    private Collection<Seat> seats;
+    private List<Seat> seats;
 
-    @OneToMany(mappedBy = "theater",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "showRoom",cascade = CascadeType.ALL)
     @JsonIgnore
-    private Collection<Schedule> schedules;
+    private List<Schedule> schedules;
 
     @ManyToOne
     @JoinColumn(name = "cinema_id")

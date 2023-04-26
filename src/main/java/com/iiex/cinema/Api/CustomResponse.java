@@ -13,12 +13,12 @@ public class CustomResponse <T>{
     public CustomResponse(boolean status, List<T> data) {
         this.status = status;
         this.data = data;
-        this.message = message;
     }
 
     public CustomResponse(boolean status, List<T> data, String message) {
         this.status = status;
         this.data = data;
+        this.message = message;
     }
 
     public CustomResponse(boolean status, String message) {

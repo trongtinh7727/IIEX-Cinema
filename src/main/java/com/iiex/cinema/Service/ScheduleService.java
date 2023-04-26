@@ -3,13 +3,13 @@ package com.iiex.cinema.Service;
 
 import com.iiex.cinema.DTO.ScheduleDTO;
 import com.iiex.cinema.Model.Schedule;
-import com.iiex.cinema.Model.Theater;
+import com.iiex.cinema.Model.ShowRoom;
 
 import java.util.List;
 
 
 public interface ScheduleService {
-    List<Schedule> findAllSchedule();
+    List<ScheduleDTO> findAllSchedule();
 
     Schedule findScheduleByID(Long ID);
 
@@ -17,5 +17,5 @@ public interface ScheduleService {
 
     void delete(Long id);
 
-    List<ScheduleDTO> findAllScheduleByTheater(Theater theater);
+    List<ScheduleDTO> findAllScheduleByTheater(ShowRoom showRoom);
 }

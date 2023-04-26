@@ -33,21 +33,31 @@ public class UserController {
         return userService.findById(id);
     }
     @PostMapping("")
-    ResponseEntity<CustomResponse> getNewUser(@RequestBody UserDto newUser) {
+    ResponseEntity<CustomResponse> addNewUser(@RequestBody UserDto newUser) {
+        User isvalid = userService.findByEmail(newUser.getEmail());
+        if (isvalid != null) {
+            CustomResponse<User> response = new CustomResponse(false,"Tên đăng nhập đã tồn tại!");
+            return ResponseEntity.ok(response);
+        }
+        newUser.setPassword("Demo@123");
         userService.saveUser(newUser);
         CustomResponse<User> response = new CustomResponse(true,"Thêm thành công");
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/{id}")
     ResponseEntity<CustomResponse> delete(@PathVariable Long id){
-        userService.delete(id);
-        CustomResponse<User> response = new CustomResponse(true,"Xóa thành công");
+        CustomResponse<User> response = new CustomResponse(false,"Tính năng không hỗ trợ");
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{id}")
     ResponseEntity<CustomResponse> update(@RequestBody User newUser) {
         List<User> list = new ArrayList<>();
-        list.add(userService.update(newUser));
+        User userUpdated = userService.update(newUser);
+        if (userUpdated == null) {
+            CustomResponse<User> response = new CustomResponse(false,list,"Không tim thấy user");
+            return ResponseEntity.ok(response);
+        }
+        list.add(userUpdated);
         CustomResponse<User> response = new CustomResponse(true,list,"Sửa thành công");
         return ResponseEntity.ok(response);
     }

@@ -2,10 +2,7 @@ package com.iiex.cinema.Controller;
 
 
 import com.iiex.cinema.Api.CustomResponse;
-import com.iiex.cinema.DTO.ScheduleDTO;
 import com.iiex.cinema.Model.Seat;
-import com.iiex.cinema.Model.Theater;
-import com.iiex.cinema.Service.ComboFoodService;
 import com.iiex.cinema.Service.SeatService;
 import com.iiex.cinema.Service.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,7 @@ public class SeatController {
     }
     @GetMapping("/getByTheater/{id}")
     ResponseEntity<CustomResponse> getByTheater(@PathVariable Long id){
-        List<Seat> schedules = seatService.getByTheater(theaterService.findTheaterByID(id));
+        List<Seat> schedules = seatService.getByShowRoom(theaterService.findTheaterByID(id));
         CustomResponse<Seat> response = new CustomResponse(true, schedules);
         return ResponseEntity.ok(response);
     }

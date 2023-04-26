@@ -7,15 +7,10 @@ $('#addEmployeeModal').on('hidden.bs.modal', function() {
         let tds = $(btn).closest('tr').find('td');
         let ID = tds[0].innerHTML;
         $("#action").val(ID);
-        $.get("/api/theaters/"+ID, {
-        }, function(data, status) {
-            var table = $('#table');
-            console.log(data)
-            // data.data.forEach(function(object) {
-                $('#THEATERNUM').val(data.theaterNumber)
-                
-            // });
-        }, "json");
+        $("#SEATCOUNT").prop('disabled', true);
+        $('#SHOWROOMNUM').val(tds[1].innerText)
+        console.log("edit")
+        console.log(tds[1].innerText)
     }
 
     // hiện dialog xác nhận khi xóa
@@ -31,21 +26,36 @@ $('#addEmployeeModal').on('hidden.bs.modal', function() {
 
 
     function clearForm() {
-        $('#THEATERNUM').val("")
+        $('#SHOWROOMNUM').val("")
         $('#SEATCOUNT').val("")
     }
 
     $(document).ready(function() {
+        function load_cinema() {
+            $.get("./?api/cinema/getall", function(data, status) {
+
+                console.log(data)
+                data.data.forEach(function(object) {
+                    var option = document.createElement('option');
+                    option.value = object.ID;
+                    option.innerText = object.NAME;
+                    $('#cinemaBox').append(option);
+                });
+            }, "json");
+        }
+        load_cinema();
+
+
         var table = $('#dataTable').DataTable({
-            ajax: "/api/theaters",
+            ajax: "./?api/showroom/getByCinema&cinema_id=-1",
             columns: [{
-                    data: 'id'
+                    data: 'ID'
                 },
                 {
-                    data: 'theaterNumber'
+                    data: 'SHOWROOMNUM'
                 },
                 {
-                    data: 'seatCount'
+                    data: 'SEATCOUNT'
                 },
                 {
                     data: null,
@@ -56,91 +66,83 @@ $('#addEmployeeModal').on('hidden.bs.modal', function() {
             ]
         });
 
+        $('#cinemaBox').change(function() {
+            let cinema_id = $('#cinemaBox').val();
+            console.log(cinema_id);
+            table.ajax.url("./?api/showroom/getByCinema&cinema_id=" + cinema_id).load();
+        })
+
 
         $("#addStaff").click(function() {
-            let THEATERNUM = $('#THEATERNUM').val();
-            let action = $('#action').val();
-            console.log(THEATERNUM);
+            let SHOWROOMNUM = $('#SHOWROOMNUM').val();
+            let CINEMA_ID = $('#cinemaBox').val();
+            let action = $("#action").val();
             if (action == "Add") {
-                var settings = {
-                    "url": "/api/theaters",
-                    "method": "POST",
-                    "timeout": 0,
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "data": JSON.stringify({
-                        "theaterNumber": THEATERNUM
-                    }),
-                };
-                $.ajax(settings).done(function (response) {
-                    console.log(response);
-                    table.ajax.reload();
-                    if (response.status) {
-                        let msg = response.message;
+                $.post("./?api/showroom/add", {
+                    SHOWROOMNUM,
+                    CINEMA_ID
+                }, function(data, status) {
+                    console.log(data)
+                    if (data.status) {
+                        table.ajax.reload();
+                        let msg = data.data;
+                        console.log(msg)
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = response.message;
+                        let msg = data.data;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                });
+                }, "json")
             } else {
                 let ID = $("#action").val();
-                var settings = {
-                    "url": "/api/theaters/"+ID,
-                    "method": "PUT",
-                    "timeout": 0,
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "data": JSON.stringify({
-                        "theaterNumber": THEATERNUM
-                    }),
-                };
-    
-                $.ajax(settings).done(function (response) {
-                    console.log(response);
-                    table.ajax.reload();
-                    if (response.status) {
-                        let msg = response.message;
+                $.post("./?api/showroom/update", {
+                    SHOWROOM_ID: ID,
+                    CINEMA_ID,
+                    SHOWROOMNUM
+                }, function(data, status) {
+                    console.log(data)
+                    if (data.status) {
+                        table.ajax.reload();
+                        let msg = data.data;
+                        console.log(msg)
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = response.message;
+                        let msg = data.data;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                });
-                $("#action").val("Add");
+                }, "json")
             }
-            clearForm();
         });
 
-      
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            var settings = {
-                "url": "/api/theaters/"+uid,
-                "method": "DELETE",
-                "timeout": 0
-            };
-            $.ajax(settings).done(function (response) {
-                console.log(response);
-                table.ajax.reload();
-                if (response.status) {
-                    let msg = response.message;
+            $.post("./?api/showroom/delete", {
+                id: uid
+            }, function(data, status) {
+                console.log(data)
+                if (data.status) {
+                    table.ajax.reload();
+                    let msg = data.data;
+                    console.log(msg)
                     $("#msg-success").css('display', 'flex').text(msg)
                     $("#msg-failed").css('display', 'none')
                 } else {
-                    let msg = response.message;
+                    let msg = data.data;
                     console.log(msg)
                     $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                     $("#msg-success").css('display', 'none')
+                    $('#confirm-removal-modal').modal({
+                        show: false
+                    });
                 }
-            });
+            }, "json")
         })
-});
+
+
+    })

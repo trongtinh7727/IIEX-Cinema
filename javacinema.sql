@@ -70,7 +70,7 @@
 
     CREATE DEFINER=`root`@`localhost` PROCEDURE `create_theater` (IN `theater_num` INT, IN `seat_count` INT)   BEGIN
       -- Tạo rạp chiếu phim mới
-      INSERT INTO `theater` (`THEATER_NUMBER`, `SEAT_COUNT`, `IS_SHOWING`)
+      INSERT INTO `showRoom` (`THEATER_NUMBER`, `SEAT_COUNT`, `IS_SHOWING`)
       VALUES (theater_num, seat_count, 0);
 
       -- Lấy ID của rạp chiếu phim mới
@@ -96,13 +96,13 @@
       END WHILE;
     END$$
 
-    CREATE DEFINER=`root`@`localhost` PROCEDURE `get_schedule_by_theater` (IN `theater_id` INT)   SELECT movie.TITLE, movie.DURATION,schedule.* ,  theater.SEATCOUNT, COUNT(ticket_seat_schedule.TICKET_ID) AS EMPTYSEAT
-    FROM schedule, theater, ticket_seat_schedule, movie
-    WHERE schedule.THEA_ID = theater.ID
+    CREATE DEFINER=`root`@`localhost` PROCEDURE `get_schedule_by_theater` (IN `theater_id` INT)   SELECT movie.TITLE, movie.DURATION,schedule.* ,  showRoom.SEATCOUNT, COUNT(ticket_seat_schedule.TICKET_ID) AS EMPTYSEAT
+    FROM schedule, showRoom, ticket_seat_schedule, movie
+    WHERE schedule.THEA_ID = showRoom.ID
     AND schedule.ID = ticket_seat_schedule.SCHEDULE_ID
     AND movie.ID = schedule.MOVIE_ID
     AND ticket_seat_schedule.BOOKED  = 0
-    AND theater.ID = theater_id
+    AND showRoom.ID = theater_id
     GROUP BY schedule.ID$$
 
     CREATE DEFINER=`root`@`localhost` PROCEDURE `get_schedule_today` ()   SELECT schedule.ID,movie.ID as MID, movie.TITLE, movie.POSTER, movie.STORY, GROUP_CONCAT(TIME(schedule.STARTTIME)) AS TIME, DATE(schedule.STARTTIME) as DAY FROM schedule JOIN movie ON movie.ID = schedule.MOVIE_ID WHERE now()< schedule.STARTTIME AND DATE(now()) = DATE(schedule.STARTTIME) GROUP BY MID$$
@@ -365,10 +365,10 @@
     -- --------------------------------------------------------
 
     --
-    -- Table structure for table `theater`
+    -- Table structure for table `showRoom`
     --
 
-    CREATE TABLE `theater` (
+    CREATE TABLE `showRoom` (
       `ID` int(11) NOT NULL,
       `theater_number` int(11) NOT NULL,
       `seat_count` int(11) NOT NULL,
@@ -377,10 +377,10 @@
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
     --
-    -- Dumping data for table `theater`
+    -- Dumping data for table `showRoom`
     --
 
-    INSERT INTO `theater` (`ID`, `theater_number`, `seat_count`, `is_showing`, `CINEMA_ID`) VALUES
+    INSERT INTO `showRoom` (`ID`, `theater_number`, `seat_count`, `is_showing`, `CINEMA_ID`) VALUES
     (2, 1, 60, 0, 0);
 
     -- --------------------------------------------------------
@@ -575,9 +575,9 @@
       ADD KEY `FK_SEAT_THEATER` (`THEATER_ID`);
 
     --
-    -- Indexes for table `theater`
+    -- Indexes for table `showRoom`
     --
-    ALTER TABLE `theater`
+    ALTER TABLE `showRoom`
       ADD PRIMARY KEY (`ID`);
 
     --
@@ -643,9 +643,9 @@
       MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
 
     --
-    -- AUTO_INCREMENT for table `theater`
+    -- AUTO_INCREMENT for table `showRoom`
     --
-    ALTER TABLE `theater`
+    ALTER TABLE `showRoom`
       MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
     --
@@ -677,13 +677,13 @@
     --
     ALTER TABLE `schedule`
       ADD CONSTRAINT `FK_Schedule_Movie` FOREIGN KEY (`MOVIE_ID`) REFERENCES `movie` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-      ADD CONSTRAINT `FKfmo3obtsyl8xtr3n6ly5n1esl` FOREIGN KEY (`THEATER_ID`) REFERENCES `theater` (`ID`);
+      ADD CONSTRAINT `FKfmo3obtsyl8xtr3n6ly5n1esl` FOREIGN KEY (`THEATER_ID`) REFERENCES `showRoom` (`ID`);
 
     --
     -- Constraints for table `seat`
     --
     ALTER TABLE `seat`
-      ADD CONSTRAINT `FKgik5885qsff01sxe7v3kqjrhx` FOREIGN KEY (`THEATER_ID`) REFERENCES `theater` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+      ADD CONSTRAINT `FKgik5885qsff01sxe7v3kqjrhx` FOREIGN KEY (`THEATER_ID`) REFERENCES `showRoom` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
     --
     -- Constraints for table `ticket`

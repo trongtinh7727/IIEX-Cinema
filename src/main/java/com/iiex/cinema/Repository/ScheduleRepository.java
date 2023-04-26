@@ -2,28 +2,16 @@ package com.iiex.cinema.Repository;
 
 import com.iiex.cinema.DTO.*;
 import com.iiex.cinema.Model.Schedule;
-import com.iiex.cinema.Model.Theater;
+import com.iiex.cinema.Model.ShowRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
-
+@Repository
 public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
 
-    @Query("SELECT new com.iiex.cinema.DTO.ScheduleDTO(s.id, m.title,m.duration,s.startTime,s.endTime) FROM Schedule s JOIN s.movie m JOIN s.theater t WHERE t = :theater")
-//    List<ScheduleTitle> findScheduleTitlesByTheater(@Param("theater") Theater theater);
-    List<ScheduleDTO> findAllByTheater(@Param("theater") Theater theater);
 
-
-    @Procedure(name = "get_schedule_today")
-    ScheduleTodayDTO getScheduleToday();
-
-    @Procedure(name = "get_schedule_by_id")
-    ScheduleInfoDTO getScheduleInformation(Long id);
-
-    @Procedure(name = "get_schedule_by_showroom")
-    List<ScheduleByShowroomDTO> getScheduleByShowroom(@Param("SHOWROOM_id") int showroomId);
 }

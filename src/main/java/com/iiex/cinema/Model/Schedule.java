@@ -32,7 +32,7 @@ public class Schedule {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "theater_id")
-    private Theater theater;
+    private ShowRoom showRoom;
 
     @OneToMany(mappedBy = "schedule")
     @JsonIgnore

@@ -66,15 +66,15 @@
                   
                   $.ajax(settings).done(function (response) {
                     console.log(response);
-                    if (data.status) {
+                    if (response.status) {
                         console.log("Okee")
                         table.ajax.reload();
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
@@ -99,15 +99,15 @@
                   
                   $.ajax(settings).done(function (response) {
                     console.log(response);
-                    if (data.status) {
+                    if (response.status) {
                         console.log("Okee")
                         table.ajax.reload();
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')

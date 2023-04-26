@@ -29,5 +29,5 @@ public class Cinema {
             mappedBy = "cinema",
             cascade = CascadeType.ALL)
     @JsonIgnore
-    private Collection<Theater> theaters;
+    private Collection<ShowRoom> showRooms;
 }

@@ -23,9 +23,11 @@ public class ScheduleController {
     ScheduleController(ScheduleService scheduleService){
         this.scheduleService = scheduleService;
     }
+
+    //    schedule manager
     @GetMapping("")
     ResponseEntity<CustomResponse> all() {
-        List<Schedule> schedules = scheduleService.findAllSchedule();
+        List<ScheduleDTO> schedules = scheduleService.findAllSchedule();
         CustomResponse<Schedule> response = new CustomResponse(true, schedules);
         return ResponseEntity.ok(response);
     }
@@ -53,7 +55,7 @@ public class ScheduleController {
         schedule.setMovie(newschedule.getMovie());
         schedule.setStartTime(newschedule.getStartTime());
         schedule.setTickets(newschedule.getTickets());
-        schedule.setTheater(newschedule.getTheater());
+        schedule.setShowRoom(newschedule.getShowRoom());
         scheduleService.saveSchedule(schedule);
         CustomResponse<Schedule> response = new CustomResponse(true,"Sửa thành công");
         return ResponseEntity.ok(response);

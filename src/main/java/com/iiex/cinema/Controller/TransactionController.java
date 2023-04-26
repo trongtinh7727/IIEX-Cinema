@@ -3,7 +3,7 @@
 //import com.iiex.cinema.Api.CustomResponse;
 //import com.iiex.cinema.DTO.RevenueMonth;
 //import com.iiex.cinema.DTO.TransactionDTO;
-//import com.iiex.cinema.Model.Theater;
+//import com.iiex.cinema.Model.ShowRoom;
 //import com.iiex.cinema.Service.ComboFoodService;
 //import com.iiex.cinema.Service.TransactionService;
 //import org.springframework.beans.factory.annotation.Autowired;

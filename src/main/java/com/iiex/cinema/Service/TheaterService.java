@@ -2,18 +2,18 @@ package com.iiex.cinema.Service;
 
 
 import com.iiex.cinema.Model.Cinema;
-import com.iiex.cinema.Model.Theater;
+import com.iiex.cinema.Model.ShowRoom;
 
 import java.util.List;
 
 public interface TheaterService {
-    List<Theater> findAllTheater();
+    List<ShowRoom> findAllTheater();
 
-    Theater findTheaterByID(Long ID);
+    ShowRoom findTheaterByID(Long ID);
 
-    Theater  saveTheater(Theater movie);
+    ShowRoom saveTheater(ShowRoom movie);
 
     void delete(Long id);
 
-    List<Theater> findAllByCinema(Cinema cinema);
+    List<ShowRoom> findAllByCinema(Cinema cinema);
 }

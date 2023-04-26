@@ -46,7 +46,7 @@ public class CinemaController {
         cinema.setAddress(newCinema.getAddress());
         cinema.setName(newCinema.getName());
         cinema.setPhone(newCinema.getPhone());
-        cinema.setTheaters(newCinema.getTheaters());
+        cinema.setShowRooms(newCinema.getShowRooms());
         cinemaService.saveCinema(cinema);
         CustomResponse<Cinema> response = new CustomResponse(true,"Sửa thành công");
         return ResponseEntity.ok(response);

@@ -13,6 +13,9 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User,Long> {
     User findByEmail(String email);
 
+    @Override
+    void delete(User entity);
+
     List<User> findAllByRoles(Role role);
 
 }

@@ -1,8 +1,7 @@
 package com.iiex.cinema.Service.impl;
 
 import com.iiex.cinema.Model.Cinema;
-import com.iiex.cinema.Model.Movie;
-import com.iiex.cinema.Model.Theater;
+import com.iiex.cinema.Model.ShowRoom;
 import com.iiex.cinema.Repository.TheaterRepository;
 import com.iiex.cinema.Service.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +15,17 @@ public class TheaterServiceImpl implements TheaterService {
     private TheaterRepository theaterRepository;
 
     @Override
-    public List<Theater> findAllTheater() {
+    public List<ShowRoom> findAllTheater() {
         return theaterRepository.findAll();
     }
 
     @Override
-    public Theater findTheaterByID(Long ID) {
+    public ShowRoom findTheaterByID(Long ID) {
         return  theaterRepository.findById(ID).get();
     }
 
     @Override
-    public Theater saveTheater(Theater movie) {
+    public ShowRoom saveTheater(ShowRoom movie) {
         theaterRepository.save(movie);
         return  movie;
     }
@@ -36,7 +35,7 @@ public class TheaterServiceImpl implements TheaterService {
     }
 
     @Override
-    public List<Theater> findAllByCinema(Cinema cinema) {
+    public List<ShowRoom> findAllByCinema(Cinema cinema) {
         return theaterRepository.findAllByCinema(cinema);
     }
 }

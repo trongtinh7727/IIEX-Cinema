@@ -20,18 +20,25 @@ public class AdminController {
     model.addAttribute("fragmentName", "Staff");
     return "Admin/dashboard";
   }
-
-  @GetMapping("/theater")
-  public String theaterManager(Model model) {
-    model.addAttribute("fragmentName", "Theater");
+  @GetMapping("/cinema")
+  public String cinemaManager(Model model) {
+    model.addAttribute("fragmentName", "Cinema");
     return "Admin/dashboard";
   }
+
+  @GetMapping("/showroom")
+  public String showRoomManager(Model model) {
+    model.addAttribute("fragmentName", "ShowRoom");
+    return "Admin/dashboard";
+  }
+
 
   @GetMapping("/schedule")
   public String scheduleManager(Model model) {
     model.addAttribute("fragmentName", "Schedule");
     return "Admin/dashboard";
   }
+
 
   @GetMapping("/movie")
   public String movieManager(Model model) {

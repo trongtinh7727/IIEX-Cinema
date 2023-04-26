@@ -82,6 +82,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User user) {
         User Old_user = userRepository.findById(user.getId()).get();
+        if (Old_user == null) {
+            return null;
+        }
         Old_user.setEmail(user.getEmail());
         Old_user.setName(user.getName());
         Old_user.setAddress(user.getAddress());
@@ -89,7 +92,9 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public void delete(Long id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).get();
+
+        userRepository.delete(user);
     }
 
     private UserDto convertEntityToDto(User user){
