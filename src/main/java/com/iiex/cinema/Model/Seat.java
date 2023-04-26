@@ -17,11 +17,11 @@ public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int seatNumber;
+    private String seatNumber;
     private String seatType;
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "theater_id")
+    @JoinColumn(name = "showroom_id")
     private ShowRoom showRoom;
 
     @OneToMany(mappedBy = "seat")

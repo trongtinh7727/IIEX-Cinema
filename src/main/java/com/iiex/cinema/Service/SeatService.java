@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface SeatService {
     List<Seat> getByShowRoom(ShowRoom showRoom);
+
+    List<Seat> generateSeat(ShowRoom showRoom);
 }

@@ -4,7 +4,7 @@ package com.iiex.cinema.Controller;
 import com.iiex.cinema.Api.CustomResponse;
 import com.iiex.cinema.Model.Seat;
 import com.iiex.cinema.Service.SeatService;
-import com.iiex.cinema.Service.TheaterService;
+import com.iiex.cinema.Service.ShowroomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,13 +20,13 @@ public class SeatController {
     @Autowired
     private SeatService seatService;
     @Autowired
-    private TheaterService theaterService;
+    private ShowroomService showroomService;
     SeatController(SeatService seatService){
         this.seatService = seatService;
     }
     @GetMapping("/getByTheater/{id}")
     ResponseEntity<CustomResponse> getByTheater(@PathVariable Long id){
-        List<Seat> schedules = seatService.getByShowRoom(theaterService.findTheaterByID(id));
+        List<Seat> schedules = seatService.getByShowRoom(showroomService.findShowroomByID(id));
         CustomResponse<Seat> response = new CustomResponse(true, schedules);
         return ResponseEntity.ok(response);
     }

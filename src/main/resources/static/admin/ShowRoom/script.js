@@ -32,13 +32,13 @@ $('#addEmployeeModal').on('hidden.bs.modal', function() {
 
     $(document).ready(function() {
         function load_cinema() {
-            $.get("./?api/cinema/getall", function(data, status) {
+            $.get("/api/cinemas", function(data, status) {
 
                 console.log(data)
                 data.data.forEach(function(object) {
                     var option = document.createElement('option');
-                    option.value = object.ID;
-                    option.innerText = object.NAME;
+                    option.value = object.id;
+                    option.innerText = object.name;
                     $('#cinemaBox').append(option);
                 });
             }, "json");
@@ -47,15 +47,15 @@ $('#addEmployeeModal').on('hidden.bs.modal', function() {
 
 
         var table = $('#dataTable').DataTable({
-            ajax: "./?api/showroom/getByCinema&cinema_id=-1",
+            ajax: "/api/showrooms/getByCinema/0",
             columns: [{
-                    data: 'ID'
+                    data: 'id'
                 },
                 {
-                    data: 'SHOWROOMNUM'
+                    data: 'showroom_number'
                 },
                 {
-                    data: 'SEATCOUNT'
+                    data: 'seat_count'
                 },
                 {
                     data: null,
@@ -69,79 +69,96 @@ $('#addEmployeeModal').on('hidden.bs.modal', function() {
         $('#cinemaBox').change(function() {
             let cinema_id = $('#cinemaBox').val();
             console.log(cinema_id);
-            table.ajax.url("./?api/showroom/getByCinema&cinema_id=" + cinema_id).load();
+            table.ajax.url("/api/showrooms/getByCinema/" + cinema_id).load();
         })
-
-
         $("#addStaff").click(function() {
             let SHOWROOMNUM = $('#SHOWROOMNUM').val();
             let CINEMA_ID = $('#cinemaBox').val();
+            console.log(CINEMA_ID)
             let action = $("#action").val();
             if (action == "Add") {
-                $.post("./?api/showroom/add", {
-                    SHOWROOMNUM,
-                    CINEMA_ID
-                }, function(data, status) {
-                    console.log(data)
-                    if (data.status) {
-                        table.ajax.reload();
-                        let msg = data.data;
-                        console.log(msg)
+                var settings = {
+                    "url": "/api/showrooms",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                      "Content-Type": "application/json",
+                    },
+                    "data": JSON.stringify({
+                      "showroom_number": SHOWROOMNUM,
+                      "cinema_id": CINEMA_ID
+                    }),
+                  };
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    table.ajax.reload();
+                    if (response.status) {
+                        let msg = response.message;
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                }, "json")
+                });
+    
             } else {
                 let ID = $("#action").val();
-                $.post("./?api/showroom/update", {
-                    SHOWROOM_ID: ID,
-                    CINEMA_ID,
-                    SHOWROOMNUM
-                }, function(data, status) {
-                    console.log(data)
-                    if (data.status) {
-                        table.ajax.reload();
-                        let msg = data.data;
-                        console.log(msg)
+                var settings = {
+                    "url": "/api/showrooms/"+ID,
+                    "method": "PUT",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                        "id":ID,
+                        "showroom_number" : SHOWROOMNUM
+                    }),
+                };
+    
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    table.ajax.reload();
+                    if (response.status) {
+                        let msg = response.message;
                         $("#msg-success").css('display', 'flex').text(msg)
                         $("#msg-failed").css('display', 'none')
                     } else {
-                        let msg = data.data;
+                        let msg = response.message;
                         console.log(msg)
                         $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                         $("#msg-success").css('display', 'none')
                     }
-                }, "json")
+                });
+                $("#action").val("Add");
             }
         });
 
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("./?api/showroom/delete", {
-                id: uid
-            }, function(data, status) {
-                console.log(data)
-                if (data.status) {
-                    table.ajax.reload();
-                    let msg = data.data;
-                    console.log(msg)
+            var settings = {
+                "url": "/api/showrooms/"+uid,
+                "method": "DELETE",
+                "timeout": 0
+            };
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                table.ajax.reload();
+                if (response.status) {
+                    let msg = response.message;
                     $("#msg-success").css('display', 'flex').text(msg)
                     $("#msg-failed").css('display', 'none')
                 } else {
-                    let msg = data.data;
+                    let msg = response.message;
                     console.log(msg)
                     $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                     $("#msg-success").css('display', 'none')
-                    $('#confirm-removal-modal').modal({
-                        show: false
-                    });
                 }
-            }, "json")
+
+            });
         })
 
 

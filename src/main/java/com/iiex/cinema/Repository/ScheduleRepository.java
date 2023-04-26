@@ -13,5 +13,5 @@ import java.util.List;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
 
-
+    List<Schedule> findAllByShowRoom_Id(Long id);
 }

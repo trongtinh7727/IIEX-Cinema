@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -18,8 +17,8 @@ public class ShowRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-    private int theaterNumber;
-    private int seatCount;
+    private int showroom_number;
+    private int seat_count;
 
     @OneToMany(mappedBy = "showRoom",cascade = CascadeType.ALL)
     @JsonIgnore

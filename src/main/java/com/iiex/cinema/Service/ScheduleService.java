@@ -1,6 +1,7 @@
 package com.iiex.cinema.Service;
 
 
+import com.iiex.cinema.DTO.ScheduleByShowroomDTO;
 import com.iiex.cinema.DTO.ScheduleDTO;
 import com.iiex.cinema.Model.Schedule;
 import com.iiex.cinema.Model.ShowRoom;
@@ -17,5 +18,5 @@ public interface ScheduleService {
 
     void delete(Long id);
 
-    List<ScheduleDTO> findAllScheduleByTheater(ShowRoom showRoom);
+    List<ScheduleByShowroomDTO> findAllScheduleByShowRom(Long id);
 }

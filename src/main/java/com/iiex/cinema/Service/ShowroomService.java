@@ -6,14 +6,10 @@ import com.iiex.cinema.Model.ShowRoom;
 
 import java.util.List;
 
-public interface TheaterService {
+public interface ShowroomService {
     List<ShowRoom> findAllTheater();
-
-    ShowRoom findTheaterByID(Long ID);
-
-    ShowRoom saveTheater(ShowRoom movie);
-
+    ShowRoom findShowroomByID(Long ID);
+    ShowRoom saveShowroom(ShowRoom showRoom);
     void delete(Long id);
-
-    List<ShowRoom> findAllByCinema(Cinema cinema);
+    List<ShowRoom> findAllByCinema(Long id);
 }

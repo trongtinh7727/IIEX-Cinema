@@ -1,10 +1,10 @@
 package com.iiex.cinema.Service.impl;
 
+import com.iiex.cinema.DTO.ScheduleByShowroomDTO;
 import com.iiex.cinema.DTO.ScheduleDTO;
-import com.iiex.cinema.Model.Movie;
-import com.iiex.cinema.Model.Schedule;
-import com.iiex.cinema.Model.ShowRoom;
+import com.iiex.cinema.Model.*;
 import com.iiex.cinema.Repository.ScheduleRepository;
+import com.iiex.cinema.Repository.TicketRepository;
 import com.iiex.cinema.Service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,9 @@ import java.util.List;
 public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     private ScheduleRepository scheduleRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
     @Override
     public List<ScheduleDTO> findAllSchedule() {
         List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
@@ -41,9 +44,22 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepository.deleteById(id);
     }
 
+//    admin schedule
     @Override
-    public List<ScheduleDTO> findAllScheduleByTheater(ShowRoom showRoom) {
-//        return scheduleRepository.findAllByTheater(showRoom);
+    public List<ScheduleByShowroomDTO> findAllScheduleByShowRom(Long id) {
+        List<ScheduleByShowroomDTO> scheduleByShowroomDTOS = new ArrayList<>();
+        List<Schedule> schedules = scheduleRepository.findAllByShowRoom_Id(id);
+        for (Schedule schedule :
+                schedules ) {
+            Movie movie = schedule.getMovie();
+            ShowRoom showRoom = schedule.getShowRoom();
+            List<Seat> seats = showRoom.getSeats();
+            int emptySeat = ticketRepository.countAllByBookingIsNullAndSchedule_Id(schedule.getId());
+            scheduleByShowroomDTOS.add(
+                    new ScheduleByShowroomDTO( movie.getTitle(),movie.getDuration(),schedule.getId(),
+                            movie.getId(), showRoom.getId(), schedule.getStartTime(),showRoom.getSeat_count(), emptySeat)
+            );
+        }
         return  null;
     }
 }

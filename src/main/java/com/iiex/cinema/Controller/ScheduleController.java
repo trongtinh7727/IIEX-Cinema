@@ -2,15 +2,17 @@ package com.iiex.cinema.Controller;
 
 
 import com.iiex.cinema.Api.CustomResponse;
+import com.iiex.cinema.DTO.ScheduleByShowroomDTO;
 import com.iiex.cinema.DTO.ScheduleDTO;
 import com.iiex.cinema.Model.Schedule;
 import com.iiex.cinema.Service.ScheduleService;
-import com.iiex.cinema.Service.TheaterService;
+import com.iiex.cinema.Service.ShowroomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/schedules")
@@ -19,22 +21,23 @@ public class ScheduleController {
     ScheduleService scheduleService;
 
     @Autowired
-    TheaterService theaterService;
+    ShowroomService showroomService;
     ScheduleController(ScheduleService scheduleService){
         this.scheduleService = scheduleService;
     }
 
     //    schedule manager
-    @GetMapping("")
-    ResponseEntity<CustomResponse> all() {
-        List<ScheduleDTO> schedules = scheduleService.findAllSchedule();
-        CustomResponse<Schedule> response = new CustomResponse(true, schedules);
+    @GetMapping("getByShowroom/{id}")
+    ResponseEntity<CustomResponse> getByShowroom(@PathVariable Long id) {
+        List<ScheduleByShowroomDTO> schedules = scheduleService.findAllScheduleByShowRom(id);
+        CustomResponse<ScheduleByShowroomDTO> response = new CustomResponse(true, schedules);
         return ResponseEntity.ok(response);
     }
     @PostMapping("")
-    ResponseEntity<CustomResponse> getNewProduct(@RequestBody Schedule newSchedule) {
-        System.out.println(newSchedule.toString());
-            scheduleService.saveSchedule(newSchedule);
+    ResponseEntity<CustomResponse> getNewProduct(@RequestBody Map<String, Object> request) {
+//        Schedule newSchedule = new Schedule(0,request.get("STARTTIME"),request.get("ENDTIME"), );
+//        System.out.println(newSchedule.toString());
+//        scheduleService.saveSchedule(newSchedule);
         CustomResponse<Schedule> response = new CustomResponse(true,"Thêm thành công");
         return ResponseEntity.ok(response);
     }
@@ -61,11 +64,5 @@ public class ScheduleController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/getByTheater/{id}")
-    ResponseEntity<CustomResponse> getAllByTheater(@PathVariable Long id) {
-        List<ScheduleDTO> schedules = scheduleService.findAllScheduleByTheater(theaterService.findTheaterByID(id));
-        CustomResponse<ScheduleDTO> response = new CustomResponse(true, schedules);
-        return ResponseEntity.ok(response);
-    }
 
 }

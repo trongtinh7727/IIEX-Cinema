@@ -22,12 +22,12 @@
     $(document).ready(function() {
 
         function load_cinema() {
-            $.get("./?api/cinema/getall", function(data, status) {
+            $.get("/api/cinemas", function(data, status) {
                 console.log(data)
                 data.data.forEach(function(object) {
                     var option = document.createElement('option');
-                    option.value = object.ID;
-                    option.innerText = object.NAME;
+                    option.value = object.id;
+                    option.innerText = object.name;
                     $('#cinemaBox').append(option);
                 });
             }, "json");
@@ -41,12 +41,12 @@
             option.value = -1;
             option.innerText = "Chọn phòng chiếu";
             $('#showroomBox').append(option);
-            $.get("./?api/showroom/getByCinema&cinema_id=" + cinema_id, function(data, status) {
+            $.get("/api/showrooms/getByCinema/" + cinema_id, function(data, status) {
                 console.log(data)
                 data.data.forEach(function(object) {
                     var option = document.createElement('option');
-                    option.value = object.ID;
-                    option.innerText = "Phòng số " + object.SHOWROOMNUM;
+                    option.value = object.id;
+                    option.innerText = "Phòng số " + object.showroom_number;
                     $('#showroomBox').append(option);
                 });
             }, "json");
@@ -57,26 +57,26 @@
 
 
         var table = $('#dataTable').DataTable({
-            ajax: "./?api/schedule/getByShowroom&showroom_id=-1",
+            ajax: "/api/schedules/getByShowroom/0",
             columns: [{
-                    data: 'ID'
+                    data: 'id'
                 },
                 {
-                    data: 'TITLE'
+                    data: 'title'
                 },
                 {
-                    data: 'DURATION'
+                    data: 'duration'
                 },
                 {
-                    data: 'STARTTIME'
+                    data: 'starttime'
                 },
                 {
-                    data: 'ENDTIME'
+                    data: 'endtime'
                 },
                 {
                     data: null,
                     render: function(data, type, row) {
-                        return data.SEATCOUNT - data.EMPTYSEAT + "/" + data.SEATCOUNT;
+                        return data.seatcount - data.emptyseat + "/" + data.seatcount;
                     }
                 },
                 {
@@ -90,14 +90,14 @@
 
 
         function load_ongoing_movie() {
-            $.get("./?api/movie/ongoing",
+            $.get("/api/movies/ongoing",
                 function(data, status) {
                     console.log(data)
                     data.data.forEach(function(object) {
                         var option = document.createElement('option');
-                        option.value = object.ID;
-                        option.dataset.duration = object.DURATION;
-                        option.innerText = object.TITLE;
+                        option.value = object.id;
+                        option.dataset.duration = object.duration;
+                        option.innerText = object.title;
                         $('#movieBox').append(option);
                     });
                 }, "json");
@@ -106,7 +106,7 @@
         let jsonArrayObj = [{}];
         $('#showroomBox').change(function() {
             let showroom_id = $('#showroomBox').val();
-            table.ajax.url("./?api/schedule/getByShowroom&showroom_id=" + showroom_id).load();
+            table.ajax.url("/api/schedules/getByShowroom/" + showroom_id).load();
         })
 
 
@@ -128,7 +128,7 @@
                 let action = $("#action").val();
                 if (action == "Add") {
                     // Tao lich chieu
-                    $.post("./?api/schedule/add", {
+                    $.post("/api/schedules", {
                         SHOWROOM_ID,
                         MOV_ID,
                         STARTTIME,

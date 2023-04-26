@@ -6,11 +6,9 @@ function fillEditForm(btn) {
         $.get("/api/cinemas/" + ID,  function(data, status) {
             var table = $('#table');
             console.log(data)
-            data.data.forEach(function(object) {
-                $('#NAME').val(object.NAME)
-                $('#PHONE').val(object.PHONE)
-                $('#ADDRESS').val(object.ADDRESS)
-            });
+                $('#NAME').val(data.name)
+                $('#PHONE').val(data.phone)
+                $('#ADDRESS').val(data.address)
         }, "json");
     }
     $(document).ready(function() {
@@ -121,26 +119,26 @@ function fillEditForm(btn) {
 
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("/api/cinemas", {
-                id: uid
-            }, function(data, status) {
-                console.log(data)
-                if (data.status) {
-                    table.ajax.reload();
-                    let msg = data.data;
-                    console.log(msg)
+            var settings = {
+                "url": "/api/cinemas/"+uid,
+                "method": "DELETE",
+                "timeout": 0
+            };
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                table.ajax.reload();
+                if (response.status) {
+                    let msg = response.message;
                     $("#msg-success").css('display', 'flex').text(msg)
                     $("#msg-failed").css('display', 'none')
                 } else {
-                    let msg = data.data;
+                    let msg = response.message;
                     console.log(msg)
                     $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                     $("#msg-success").css('display', 'none')
-                    $('#confirm-removal-modal').modal({
-                        show: false
-                    });
                 }
-            }, "json")
+
+            });
         })
 
 
