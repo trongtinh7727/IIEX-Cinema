@@ -17,6 +17,8 @@ public class ScheduleByShowroomDTO {
     private long movId;
     private long showroomId;
     private Date startTime;
+    private Date endTime;
+
     private int seatCount;
     private int emptySeat;
 

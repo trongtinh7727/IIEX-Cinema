@@ -4,9 +4,14 @@ package com.iiex.cinema.Controller;
 import com.iiex.cinema.Api.CustomResponse;
 import com.iiex.cinema.DTO.ScheduleByShowroomDTO;
 import com.iiex.cinema.DTO.ScheduleDTO;
+import com.iiex.cinema.Model.Movie;
 import com.iiex.cinema.Model.Schedule;
+import com.iiex.cinema.Model.ShowRoom;
+import com.iiex.cinema.Service.MovieService;
 import com.iiex.cinema.Service.ScheduleService;
 import com.iiex.cinema.Service.ShowroomService;
+import com.iiex.cinema.Service.TicketService;
+import com.iiex.cinema.Service.impl.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +26,14 @@ public class ScheduleController {
     ScheduleService scheduleService;
 
     @Autowired
+    private MovieService movieService;
+
+    @Autowired
     ShowroomService showroomService;
+
+    @Autowired
+    TicketService ticketService;
+
     ScheduleController(ScheduleService scheduleService){
         this.scheduleService = scheduleService;
     }
@@ -34,10 +46,13 @@ public class ScheduleController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("")
-    ResponseEntity<CustomResponse> getNewProduct(@RequestBody Map<String, Object> request) {
-//        Schedule newSchedule = new Schedule(0,request.get("STARTTIME"),request.get("ENDTIME"), );
-//        System.out.println(newSchedule.toString());
-//        scheduleService.saveSchedule(newSchedule);
+    ResponseEntity<CustomResponse> getNewProduct(@RequestBody ScheduleDTO newSchedule) {
+        Movie movie = movieService.finMovieByID(newSchedule.getMovie_Id());
+        ShowRoom showRoom = showroomService.findShowroomByID(newSchedule.getShowRoom_Id());
+        Schedule schedule = new Schedule(0,newSchedule.getPrice(),newSchedule.getStartTime(),
+                newSchedule.getEndTime(),movie,showRoom,null);
+        schedule =  scheduleService.saveSchedule(schedule);
+        ticketService.generateTicket(schedule);
         CustomResponse<Schedule> response = new CustomResponse(true,"Thêm thành công");
         return ResponseEntity.ok(response);
     }

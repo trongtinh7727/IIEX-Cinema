@@ -68,15 +68,15 @@
                     data: 'duration'
                 },
                 {
-                    data: 'starttime'
+                    data: 'startTime'
                 },
                 {
-                    data: 'endtime'
+                    data: 'endTime'
                 },
                 {
                     data: null,
                     render: function(data, type, row) {
-                        return data.seatcount - data.emptyseat + "/" + data.seatcount;
+                        return data.seatCount - data.emptySeat + "/" + data.seatCount;
                     }
                 },
                 {
@@ -183,26 +183,26 @@
 
         $("#delete-button").on('click', function() {
             let uid = $('#delete-button').attr('uid');
-            $.post("./?api/schedule/delete", {
-                id: uid
-            }, function(data, status) {
-                console.log(data)
-                if (data.status) {
-                    table.ajax.reload();
-                    let msg = data.data;
-                    console.log(msg)
+            var settings = {
+                "url": "/api/schedules/"+uid,
+                "method": "DELETE",
+                "timeout": 0
+            };
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                table.ajax.reload();
+                if (response.status) {
+                    let msg = response.message;
                     $("#msg-success").css('display', 'flex').text(msg)
                     $("#msg-failed").css('display', 'none')
                 } else {
-                    let msg = data.data;
+                    let msg = response.message;
                     console.log(msg)
                     $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + msg)
                     $("#msg-success").css('display', 'none')
-                    $('#confirm-removal-modal').modal({
-                        show: false
-                    });
                 }
-            }, "json")
+
+            });
         })
     });
 

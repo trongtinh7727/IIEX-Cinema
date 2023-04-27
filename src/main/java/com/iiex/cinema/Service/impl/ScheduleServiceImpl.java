@@ -19,17 +19,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Autowired
     private TicketRepository ticketRepository;
-    @Override
-    public List<ScheduleDTO> findAllSchedule() {
-        List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
-        List<Schedule> schedules =  scheduleRepository.findAll();
-        for (Schedule schedule:schedules) {
-            Movie movie = schedule.getMovie();
-            ShowRoom showRoom = schedule.getShowRoom();
-            scheduleDTOS.add(new ScheduleDTO(schedule.getId(),movie.getTitle(),movie.getDuration(),schedule.getStartTime(), schedule.getEndTime()));
-        }
-        return scheduleDTOS;
-    }
+
     @Override
     public Schedule findScheduleByID(Long ID) {
         return scheduleRepository.findById(ID).get();
@@ -37,10 +27,13 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Schedule saveSchedule(Schedule schedule) {
+
         return scheduleRepository.save(schedule);
     }
     @Override
     public void delete(Long id) {
+        System.out.println("----------------------------------");
+        System.out.println(id);
         scheduleRepository.deleteById(id);
     }
 
@@ -57,9 +50,9 @@ public class ScheduleServiceImpl implements ScheduleService {
             int emptySeat = ticketRepository.countAllByBookingIsNullAndSchedule_Id(schedule.getId());
             scheduleByShowroomDTOS.add(
                     new ScheduleByShowroomDTO( movie.getTitle(),movie.getDuration(),schedule.getId(),
-                            movie.getId(), showRoom.getId(), schedule.getStartTime(),showRoom.getSeat_count(), emptySeat)
+                            movie.getId(), showRoom.getId(), schedule.getStartTime(), schedule.getEndTime(),showRoom.getSeat_count(), emptySeat)
             );
         }
-        return  null;
+        return  scheduleByShowroomDTOS;
     }
 }

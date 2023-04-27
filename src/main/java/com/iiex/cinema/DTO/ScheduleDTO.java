@@ -16,5 +16,7 @@ public class ScheduleDTO  {
     private java.util.Date startTime;
     private java.util.Date endTime;
 
-//    private int status;
+    private float price;
+    private long movie_Id;
+    private long showRoom_Id;
 }

@@ -61,7 +61,8 @@ public class ShowroomController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<CustomResponse> delete(@PathVariable Long id){
-        CustomResponse<ShowRoom> response = new CustomResponse(true,"Chức năng không hỗ trợ!");
+        showroomService.delete(id);
+        CustomResponse<ShowRoom> response = new CustomResponse(true,"Đã xóa thành công!");
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{id}")

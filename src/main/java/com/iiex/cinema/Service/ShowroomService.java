@@ -6,7 +6,7 @@ import com.iiex.cinema.Model.ShowRoom;
 
 import java.util.List;
 
-public interface ShowroomService {
+public interface  ShowroomService {
     List<ShowRoom> findAllTheater();
     ShowRoom findShowroomByID(Long ID);
     ShowRoom saveShowroom(ShowRoom showRoom);

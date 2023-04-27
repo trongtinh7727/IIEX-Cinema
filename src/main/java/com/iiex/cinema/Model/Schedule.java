@@ -14,7 +14,9 @@ import java.util.Collection;
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int Id;
+
+    private  float price;
 
     @Column(name = "start_time")
     @Temporal(TemporalType.TIMESTAMP)
@@ -24,17 +26,18 @@ public class Schedule {
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date endTime;
 
-    @ManyToOne
+    @ManyToOne(  fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
-    @ManyToOne
+    @ManyToOne(  fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "showroom_id")
     private ShowRoom showRoom;
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule",
+            fetch = FetchType.LAZY)
     @JsonIgnore
     private  Collection<Ticket> tickets;
 

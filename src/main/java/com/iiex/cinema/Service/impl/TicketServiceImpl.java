@@ -17,13 +17,13 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private TicketRepository ticketRepository;
     @Override
-    public List<Ticket> generateTicket(Schedule schedule, float price) {
+    public List<Ticket> generateTicket(Schedule schedule) {
         List<Ticket> tickets = new ArrayList<>();
         ShowRoom showRoom = schedule.getShowRoom();
         List<Seat> seats = showRoom.getSeats();
         for (Seat seat :
                 seats) {
-            Ticket ticket = new Ticket(0,price,null,schedule,seat);
+            Ticket ticket = new Ticket(0,schedule.getPrice(),null,schedule,seat);
             ticketRepository.save(ticket);
             tickets.add(ticket);
         }
