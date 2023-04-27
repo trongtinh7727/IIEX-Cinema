@@ -47,7 +47,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public RevenueMonth getRevenueOfMonth(Date mouth) {
+    public RevenueMonth getRevenueOfMonth(Date month) {
         return null;
     }
 }

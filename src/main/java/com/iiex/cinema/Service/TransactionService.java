@@ -10,5 +10,5 @@ public interface TransactionService {
     List<TransactionDTO> getAllTransaction();
     TransactionDTO getTransaction(Long id);
 
-    RevenueMonth getRevenueOfMonth(Date mouth);
+    RevenueMonth getRevenueOfMonth(Date month);
 }

@@ -31,11 +31,6 @@ public class TransactionController {
         CustomResponse<TransactionDTO> response = new CustomResponse(true, transactionDTOS);
         return ResponseEntity.ok(response);
     }
-    @GetMapping("/getrevenue")
-    RevenueMonth getRevenue(@PathVariable Date month){
-        RevenueMonth transactionDTOS = transactionService.getRevenueOfMonth(month);
-        return transactionDTOS;
-    }
 
     @GetMapping("/getbyid/{id}")
     TransactionDTO getById(@PathVariable Long id) {
