@@ -10,7 +10,9 @@ import java.util.List;
 
 
 public interface ScheduleService {
-    Schedule findScheduleByID(Long ID);
+    ScheduleDTO findScheduleByID(Long ID);
+
+    Schedule finSchedule(Long ID);
 
     Schedule  saveSchedule(Schedule schedule);
 

@@ -1,9 +1,10 @@
 package com.iiex.cinema.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Collection;
 
 @Data
 @NoArgsConstructor
@@ -17,4 +18,10 @@ public class ComboFood {
     private String name;
     private float price;
     private String images;
+
+    @ManyToMany(mappedBy = "comboFoods")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    private Collection<Booking> bookings;
 }

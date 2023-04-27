@@ -57,7 +57,7 @@ public class ScheduleController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/{id}")
-    Schedule one(@PathVariable Long id) {
+    ScheduleDTO one(@PathVariable Long id) {
         return scheduleService.findScheduleByID(id);
     }
     @DeleteMapping("/{id}")
@@ -67,13 +67,14 @@ public class ScheduleController {
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{id}")
-    ResponseEntity<CustomResponse> replaceEmployee(@RequestBody Schedule newschedule, @PathVariable Long id) {
-        Schedule schedule = scheduleService.findScheduleByID(id);
-        schedule.setEndTime(newschedule.getEndTime());
-        schedule.setMovie(newschedule.getMovie());
-        schedule.setStartTime(newschedule.getStartTime());
-        schedule.setTickets(newschedule.getTickets());
-        schedule.setShowRoom(newschedule.getShowRoom());
+    ResponseEntity<CustomResponse> replaceEmployee(@RequestBody ScheduleDTO newSchedule, @PathVariable Long id) {
+        Movie movie = movieService.finMovieByID(newSchedule.getMovie_Id());
+        ShowRoom showRoom = showroomService.findShowroomByID(newSchedule.getShowRoom_Id());
+        Schedule schedule = scheduleService.finSchedule(id);
+        schedule.setMovie(movie);
+        schedule.setStartTime(newSchedule.getStartTime());
+        schedule.setEndTime(newSchedule.getEndTime());
+        schedule.setPrice(newSchedule.getPrice());
         scheduleService.saveSchedule(schedule);
         CustomResponse<Schedule> response = new CustomResponse(true,"Sửa thành công");
         return ResponseEntity.ok(response);

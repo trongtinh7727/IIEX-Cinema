@@ -14,7 +14,7 @@ import java.util.Collection;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @ManyToOne
     @JsonIgnore

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Apr 26, 2023 at 10:52 PM
--- Server version: 8.0.30
--- PHP Version: 8.1.10
+-- Host: 127.0.0.1
+-- Generation Time: Apr 27, 2023 at 10:00 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `cinema`
+-- Database: `datatest`
 --
 
 -- --------------------------------------------------------
@@ -28,11 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `booking` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `created_at` datetime(6) DEFAULT NULL,
   `food_price` double NOT NULL,
   `ticket_price` double NOT NULL,
-  `user_id` int DEFAULT NULL
+  `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -49,7 +49,7 @@ INSERT INTO `booking` (`id`, `created_at`, `food_price`, `ticket_price`, `user_i
 --
 
 CREATE TABLE `cinema` (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `address` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL
@@ -69,7 +69,7 @@ INSERT INTO `cinema` (`id`, `address`, `phone`, `name`) VALUES
 --
 
 CREATE TABLE `foodcombo` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `images` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `price` float NOT NULL
@@ -89,8 +89,8 @@ INSERT INTO `foodcombo` (`id`, `images`, `name`, `price`) VALUES
 --
 
 CREATE TABLE `food_booking` (
-  `food_id` int NOT NULL,
-  `booking_id` int NOT NULL
+  `food_id` int(11) NOT NULL,
+  `booking_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -108,11 +108,11 @@ INSERT INTO `food_booking` (`food_id`, `booking_id`) VALUES
 --
 
 CREATE TABLE `movie` (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `actors` varchar(255) DEFAULT NULL,
   `closing_day` datetime(6) DEFAULT NULL,
   `director` varchar(255) DEFAULT NULL,
-  `duration` int NOT NULL,
+  `duration` int(11) NOT NULL,
   `genre` varchar(255) DEFAULT NULL,
   `opening_day` datetime(6) DEFAULT NULL,
   `poster` varchar(255) DEFAULT NULL,
@@ -159,7 +159,7 @@ INSERT INTO `movie` (`id`, `actors`, `closing_day`, `director`, `duration`, `gen
 --
 
 CREATE TABLE `role` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -178,12 +178,20 @@ INSERT INTO `role` (`id`, `name`) VALUES
 --
 
 CREATE TABLE `schedule` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `end_time` datetime(6) DEFAULT NULL,
   `start_time` datetime(6) DEFAULT NULL,
-  `movie_id` bigint DEFAULT NULL,
-  `showroom_id` bigint DEFAULT NULL
+  `movie_id` bigint(20) DEFAULT NULL,
+  `showroom_id` bigint(20) DEFAULT NULL,
+  `price` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `schedule`
+--
+
+INSERT INTO `schedule` (`id`, `end_time`, `start_time`, `movie_id`, `showroom_id`, `price`) VALUES
+(4, '2023-04-28 08:25:00.000000', '2023-04-28 06:00:00.000000', 1, 5, 100000);
 
 -- --------------------------------------------------------
 
@@ -192,10 +200,10 @@ CREATE TABLE `schedule` (
 --
 
 CREATE TABLE `seat` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `seat_number` varchar(3) NOT NULL,
   `seat_type` varchar(255) DEFAULT NULL,
-  `showroom_id` bigint DEFAULT NULL
+  `showroom_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -301,10 +309,10 @@ INSERT INTO `seat` (`id`, `seat_number`, `seat_type`, `showroom_id`) VALUES
 --
 
 CREATE TABLE `showroom` (
-  `id` bigint NOT NULL,
-  `seat_count` int NOT NULL,
-  `showroom_number` int NOT NULL,
-  `cinema_id` bigint DEFAULT NULL
+  `id` bigint(20) NOT NULL,
+  `seat_count` int(11) NOT NULL,
+  `showroom_number` int(11) NOT NULL,
+  `cinema_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -312,7 +320,6 @@ CREATE TABLE `showroom` (
 --
 
 INSERT INTO `showroom` (`id`, `seat_count`, `showroom_number`, `cinema_id`) VALUES
-(3, 0, 4, 1),
 (5, 90, 6, 1);
 
 -- --------------------------------------------------------
@@ -322,13 +329,108 @@ INSERT INTO `showroom` (`id`, `seat_count`, `showroom_number`, `cinema_id`) VALU
 --
 
 CREATE TABLE `ticket` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `price` float NOT NULL,
-  `booking_id` int DEFAULT NULL,
-  `schedule_id` int DEFAULT NULL,
-  `seat_id` int DEFAULT NULL,
-  `booked` int NOT NULL
+  `booking_id` int(11) DEFAULT NULL,
+  `schedule_id` int(11) DEFAULT NULL,
+  `seat_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `ticket`
+--
+
+INSERT INTO `ticket` (`id`, `price`, `booking_id`, `schedule_id`, `seat_id`) VALUES
+(1, 90000, 1, 4, 91),
+(2, 90000, NULL, 4, 92),
+(3, 90000, NULL, 4, 93),
+(4, 90000, NULL, 4, 94),
+(5, 90000, NULL, 4, 95),
+(6, 90000, NULL, 4, 96),
+(7, 90000, NULL, 4, 97),
+(8, 90000, 1, 4, 98),
+(9, 90000, NULL, 4, 99),
+(10, 90000, NULL, 4, 100),
+(11, 90000, NULL, 4, 101),
+(12, 90000, NULL, 4, 102),
+(13, 90000, NULL, 4, 103),
+(14, 90000, NULL, 4, 104),
+(15, 90000, NULL, 4, 105),
+(16, 90000, NULL, 4, 106),
+(17, 90000, NULL, 4, 107),
+(18, 90000, NULL, 4, 108),
+(19, 90000, NULL, 4, 109),
+(20, 90000, NULL, 4, 110),
+(21, 90000, NULL, 4, 111),
+(22, 90000, NULL, 4, 112),
+(23, 90000, NULL, 4, 113),
+(24, 90000, NULL, 4, 114),
+(25, 90000, NULL, 4, 115),
+(26, 90000, NULL, 4, 116),
+(27, 90000, NULL, 4, 117),
+(28, 90000, NULL, 4, 118),
+(29, 90000, NULL, 4, 119),
+(30, 90000, NULL, 4, 120),
+(31, 90000, NULL, 4, 121),
+(32, 90000, NULL, 4, 122),
+(33, 90000, NULL, 4, 123),
+(34, 90000, NULL, 4, 124),
+(35, 90000, NULL, 4, 125),
+(36, 90000, NULL, 4, 126),
+(37, 90000, NULL, 4, 127),
+(38, 90000, NULL, 4, 128),
+(39, 90000, NULL, 4, 129),
+(40, 90000, NULL, 4, 130),
+(41, 90000, NULL, 4, 131),
+(42, 90000, NULL, 4, 132),
+(43, 90000, NULL, 4, 133),
+(44, 90000, NULL, 4, 134),
+(45, 90000, NULL, 4, 135),
+(46, 90000, NULL, 4, 136),
+(47, 90000, NULL, 4, 137),
+(48, 90000, NULL, 4, 138),
+(49, 90000, NULL, 4, 139),
+(50, 90000, NULL, 4, 140),
+(51, 90000, NULL, 4, 141),
+(52, 90000, NULL, 4, 142),
+(53, 90000, NULL, 4, 143),
+(54, 90000, NULL, 4, 144),
+(55, 90000, NULL, 4, 145),
+(56, 90000, NULL, 4, 146),
+(57, 90000, NULL, 4, 147),
+(58, 90000, NULL, 4, 148),
+(59, 90000, NULL, 4, 149),
+(60, 90000, NULL, 4, 150),
+(61, 90000, NULL, 4, 151),
+(62, 90000, NULL, 4, 152),
+(63, 90000, NULL, 4, 153),
+(64, 90000, NULL, 4, 154),
+(65, 90000, NULL, 4, 155),
+(66, 90000, NULL, 4, 156),
+(67, 90000, NULL, 4, 157),
+(68, 90000, NULL, 4, 158),
+(69, 90000, NULL, 4, 159),
+(70, 90000, NULL, 4, 160),
+(71, 90000, NULL, 4, 161),
+(72, 90000, NULL, 4, 162),
+(73, 90000, NULL, 4, 163),
+(74, 90000, NULL, 4, 164),
+(75, 90000, NULL, 4, 165),
+(76, 90000, NULL, 4, 166),
+(77, 90000, NULL, 4, 167),
+(78, 90000, NULL, 4, 168),
+(79, 90000, NULL, 4, 169),
+(80, 90000, NULL, 4, 170),
+(81, 90000, NULL, 4, 171),
+(82, 90000, NULL, 4, 172),
+(83, 90000, NULL, 4, 173),
+(84, 90000, NULL, 4, 174),
+(85, 90000, NULL, 4, 175),
+(86, 90000, NULL, 4, 176),
+(87, 90000, NULL, 4, 177),
+(88, 90000, NULL, 4, 178),
+(89, 90000, NULL, 4, 179),
+(90, 90000, NULL, 4, 180);
 
 -- --------------------------------------------------------
 
@@ -337,7 +439,7 @@ CREATE TABLE `ticket` (
 --
 
 CREATE TABLE `user` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `address` varchar(255) DEFAULT NULL,
   `created` datetime(6) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
@@ -364,8 +466,8 @@ INSERT INTO `user` (`id`, `address`, `created`, `email`, `name`, `password`) VAL
 --
 
 CREATE TABLE `users_roles` (
-  `user_id` int NOT NULL,
-  `role_id` int NOT NULL
+  `user_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -475,61 +577,61 @@ ALTER TABLE `users_roles`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `cinema`
 --
 ALTER TABLE `cinema`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `foodcombo`
 --
 ALTER TABLE `foodcombo`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `movie`
 --
 ALTER TABLE `movie`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `seat`
 --
 ALTER TABLE `seat`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
 
 --
 -- AUTO_INCREMENT for table `showroom`
 --
 ALTER TABLE `showroom`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `ticket`
 --
 ALTER TABLE `ticket`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

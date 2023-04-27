@@ -16,15 +16,12 @@ import java.util.Date;
 @NoArgsConstructor
 public class TransactionDTO {
     private Long id;
-    private String cinemaName;
-    private String clientUsername;
-    private String clientFirstName;
-    private String clientLastName;
-    private String clientPhone;
-    private String clientAddress;
-    private String movieTitle;
-    private Date startTime;
-    private Date createdAt;
+    private String cinema;
+    private String username;
+    private String name;
+    private String title;
+    private Date startime;
+    private Date created_at;
     private String seats;
     private double ticketPrice;
     private double foodPrice;

@@ -21,7 +21,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     private TicketRepository ticketRepository;
 
     @Override
-    public Schedule findScheduleByID(Long ID) {
+    public ScheduleDTO findScheduleByID(Long ID) {
+        Schedule schedule =  scheduleRepository.findById(ID).get();
+        ScheduleDTO scheduleDTO = new ScheduleDTO(schedule.getId(), schedule.getMovie().getTitle(), schedule.getMovie().getDuration(), schedule.getStartTime(), schedule.getEndTime(),
+                schedule.getPrice(), schedule.getMovie().getId(), schedule.getShowRoom().getId());
+        return scheduleDTO;
+    }
+
+    @Override
+    public Schedule finSchedule(Long ID) {
         return scheduleRepository.findById(ID).get();
     }
 
@@ -32,8 +40,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
     @Override
     public void delete(Long id) {
-        System.out.println("----------------------------------");
-        System.out.println(id);
+
         scheduleRepository.deleteById(id);
     }
 
@@ -50,7 +57,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             int emptySeat = ticketRepository.countAllByBookingIsNullAndSchedule_Id(schedule.getId());
             scheduleByShowroomDTOS.add(
                     new ScheduleByShowroomDTO( movie.getTitle(),movie.getDuration(),schedule.getId(),
-                            movie.getId(), showRoom.getId(), schedule.getStartTime(), schedule.getEndTime(),showRoom.getSeat_count(), emptySeat)
+                            movie.getId(), showRoom.getId(), schedule.getStartTime(), schedule.getEndTime(),showRoom.getSeat_count(), emptySeat, schedule.getPrice())
             );
         }
         return  scheduleByShowroomDTOS;

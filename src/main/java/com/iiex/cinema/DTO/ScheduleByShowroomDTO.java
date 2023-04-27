@@ -21,5 +21,6 @@ public class ScheduleByShowroomDTO {
 
     private int seatCount;
     private int emptySeat;
+    private  float price;
 
 }

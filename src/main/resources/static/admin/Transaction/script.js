@@ -2,47 +2,41 @@
 
         $('#btn_add_employee').hide();
         var table = $('#dataTable').DataTable({
-            ajax: "./?api/transaction/getall",
+            ajax: "/api/transactions",
             columns: [{
-                    data: "ID"
+                    data: "id"
                 }, 
                 {
-                    data: "CINEMA"
+                    data: "cinema"
                 },
                 {
-                    data: "USERNAME"
+                    data: "username"
                 },
                 {
-                    data: "PHONE"
+                    data: "name"
                 },
                 {
-                    data: null,
-                    render: function(data, type, row) {
-                        return data.FIRSTNAME + ' ' + data.LASTNAME;
-                    }
+                    data: "title"
                 },
                 {
-                    data: "TITLE"
+                    data: "startime"
                 },
                 {
-                    data: "STARTTIME"
+                    data: "created_at"
                 },
                 {
-                    data: "CREATED_AT"
+                    data: "seats"
                 },
                 {
-                    data: "Seats"
-                },
-                {
-                    data: "TICKET_PRICE",
+                    data: "ticketPrice",
                     render: $.fn.dataTable.render.number(',', '.', 0, '$')
                 },
                 {
-                    data: "FOOD_PRICE",
+                    data: "foodPrice",
                     render: $.fn.dataTable.render.number(',', '.', 0, '$')
                 },
                 {
-                    data: "Total",
+                    data: "totalPrice",
                     render: $.fn.dataTable.render.number(',', '.', 0, '$')
                 }
             ]
