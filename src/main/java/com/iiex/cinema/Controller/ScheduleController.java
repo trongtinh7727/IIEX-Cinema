@@ -45,6 +45,21 @@ public class ScheduleController {
         CustomResponse<ScheduleByShowroomDTO> response = new CustomResponse(true, schedules);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/getbookedseat/{id}")
+    ResponseEntity<CustomResponse> getBooked(@PathVariable Long id) {
+        List<String> seats = scheduleService.getBookedSeat(id);
+        CustomResponse<ScheduleByShowroomDTO> response = new CustomResponse(true, seats);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("getByShowroom/{id1}/{id2}")
+    ResponseEntity<CustomResponse> getByShowroomAndMovie(@PathVariable Long id1, @PathVariable Long id2) {
+        List<ScheduleByShowroomDTO> schedules = scheduleService.findAllScheduleByShowRomAndMovie(id1, id2);
+        CustomResponse<ScheduleByShowroomDTO> response = new CustomResponse(true, schedules);
+        return ResponseEntity.ok(response);
+    }
+
+
     @PostMapping("")
     ResponseEntity<CustomResponse> getNewProduct(@RequestBody ScheduleDTO newSchedule) {
         Movie movie = movieService.finMovieByID(newSchedule.getMovie_Id());
@@ -67,7 +82,7 @@ public class ScheduleController {
         return ResponseEntity.ok(response);
     }
     @PutMapping("/{id}")
-    ResponseEntity<CustomResponse> replaceEmployee(@RequestBody ScheduleDTO newSchedule, @PathVariable Long id) {
+    ResponseEntity<CustomResponse> update(@RequestBody ScheduleDTO newSchedule, @PathVariable Long id) {
         Movie movie = movieService.finMovieByID(newSchedule.getMovie_Id());
         ShowRoom showRoom = showroomService.findShowroomByID(newSchedule.getShowRoom_Id());
         Schedule schedule = scheduleService.finSchedule(id);

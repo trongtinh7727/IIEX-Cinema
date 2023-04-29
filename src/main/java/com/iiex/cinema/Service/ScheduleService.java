@@ -18,5 +18,8 @@ public interface ScheduleService {
 
     void delete(Long id);
 
+    List<String> getBookedSeat(long id);
+
     List<ScheduleByShowroomDTO> findAllScheduleByShowRom(Long id);
+    List<ScheduleByShowroomDTO> findAllScheduleByShowRomAndMovie(Long showroomID, Long movieID);
 }

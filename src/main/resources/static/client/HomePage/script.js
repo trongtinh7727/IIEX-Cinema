@@ -1,12 +1,12 @@
     function get_upcoming_movies() {
-        fetch('./?api/movie/upcoming').then(res => res.json())
+        fetch('/api/movies/upcoming').then(res => res.json())
             .then(json => {
                 console.log(json)
                 if (json.status)
                     $.each(json.data, function(index, movie) {
                         let cardTemplate = `
                                      <div name="upcoming-movie-item" class="movie-item col-12 col-lg-6 col-xl-4">
-                                      <a href="./?moviedetail&id=${movie.ID}">      
+                                      <a href="/moviedetail/${movie.id}">      
                                         <div class="card bg-transparent border-0">
                                                 <img name="upcoming-movie-item-poster" src="" class="card-img-top rounded-5 movie-image" alt="Poster">
                                                 <div class="card-body">
@@ -20,8 +20,8 @@
                                     <div>`;
                         let $card = $(cardTemplate);
                         let $cardContainer = $('#upcoming-movies-list');
-                        $card.find('[name="upcoming-movie-item-poster"]').attr('src', movie.POSTER);
-                        $card.find('[name="upcoming-movie-item-title"]').text(movie.TITLE);
+                        $card.find('[name="upcoming-movie-item-poster"]').attr('src', movie.poster);
+                        $card.find('[name="upcoming-movie-item-title"]').text(movie.title);
                         // $card.find('img').attr('src', movie.tag);
                         $cardContainer.append($card);
                     });
@@ -32,14 +32,14 @@
     }
 
     function get_ongoing_movies() {
-        fetch('./?api/movie/ongoing').then(res => res.json())
+        fetch('/api/movies/ongoing').then(res => res.json())
             .then(json => {
                 console.log(json)
                 if (json.status)
                     $.each(json.data, function(index, movie) {
                         let cardTemplate = `
                                      <div name="ongoing-movie-item" class="movie-item col-12 col-lg-6 col-xl-4">
-                                     <a href="./?moviedetail&id=${movie.ID}">   
+                                     <a href="/moviedetail/${movie.id}">   
                                         <div class="card bg-transparent border-0">
                                                 <img name="ongoing-movie-item-poster" src="" class="card-img-top rounded-5 movie-image" alt="Poster">
                                                 <div class="card-body">
@@ -53,8 +53,8 @@
                                     <div>`;
                         let $card = $(cardTemplate);
                         let $cardContainer = $('#ongoing-movies-list');
-                        $card.find('[name="ongoing-movie-item-poster"]').attr('src', movie.POSTER);
-                        $card.find('[name="ongoing-movie-item-title"]').text(movie.TITLE);
+                        $card.find('[name="ongoing-movie-item-poster"]').attr('src', movie.poster);
+                        $card.find('[name="ongoing-movie-item-title"]').text(movie.title);
                         // $card.find('img').attr('src', movie.tag);
                         $cardContainer.append($card);
                     });
@@ -65,7 +65,7 @@
     }
 
     function get_trailer_movies() {
-        fetch('./?api/movie/gettrailer').then(res => res.json())
+        fetch('/api/movies/ongoing').then(res => res.json())
             .then(json => {
                 console.log(json)
                 if (json.status)
@@ -111,4 +111,5 @@
             $('.trailer-video').attr('src', $('.trailer-video').attr('src'));
         });
 
+        $('#HomePage').addClass('active').addClass('custom-active').removeClass('text-white').addClass('text-yellow')
     })

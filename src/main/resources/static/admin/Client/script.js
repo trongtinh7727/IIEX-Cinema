@@ -1,4 +1,8 @@
-    function fillEditForm(btn) {
+    $(function() {
+        console.log("run")
+        $("#Client").addClass("btn-dark")
+    })
+  function fillEditForm(btn) {
         $("#addEmployeeModalLabel").val("Update Staff");
         let tds = $(btn).closest('tr').find('td')
         let ID = tds[0].innerHTML;

@@ -9,4 +9,5 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
 
     List<Schedule> findAllByShowRoom_Id(Long id);
+
 }

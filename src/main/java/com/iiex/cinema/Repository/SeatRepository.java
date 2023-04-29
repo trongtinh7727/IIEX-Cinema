@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface SeatRepository extends JpaRepository<Seat,Long> {
+    Seat findBySeatNumberAndAndShowRoom(String seatnumber, ShowRoom showRoom);
 }

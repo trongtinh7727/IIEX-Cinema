@@ -9,5 +9,7 @@ import java.util.List;
 public interface SeatService {
     List<Seat> getByShowRoom(ShowRoom showRoom);
 
+    Seat getByShowRoomAndSeatNumber(ShowRoom showRoom, String seatNumber);
+
     List<Seat> generateSeat(ShowRoom showRoom);
 }

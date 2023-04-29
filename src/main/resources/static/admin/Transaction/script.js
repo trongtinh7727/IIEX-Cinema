@@ -1,4 +1,5 @@
     $(document).ready(function() {
+    $("#Transaction").addClass("btn-dark")
 
         $('#btn_add_employee').hide();
         var table = $('#dataTable').DataTable({

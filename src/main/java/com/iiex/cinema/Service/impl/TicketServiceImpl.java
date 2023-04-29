@@ -29,4 +29,14 @@ public class TicketServiceImpl implements TicketService {
         }
         return tickets;
     }
+
+    @Override
+    public Ticket findByScheduleAndSeat(Schedule schedule, Seat seat) {
+        return ticketRepository.findByScheduleAndSeat(schedule,seat);
+    }
+
+    @Override
+    public Ticket save(Ticket ticket) {
+        return ticketRepository.save(ticket);
+    }
 }

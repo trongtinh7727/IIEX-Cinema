@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    $("#Combo").addClass("btn-dark")
     var table = $('#dataTable').DataTable({
         ajax: "/api/combofoods",
         columns: [{

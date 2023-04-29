@@ -44,7 +44,21 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepository.deleteById(id);
     }
 
-//    admin schedule
+    @Override
+    public List<String> getBookedSeat(long id) {
+        List<String> seats = new ArrayList<>();
+        Schedule schedule = scheduleRepository.findById(id).get();
+        List<Ticket> tickets = (List<Ticket>) schedule.getTickets();
+        for (Ticket ticket :
+                tickets) {
+            if (ticket.getBooking() != null) {
+                seats.add(ticket.getSeat().getSeatNumber());
+            }
+        }
+        return seats;
+    }
+
+    //    admin schedule
     @Override
     public List<ScheduleByShowroomDTO> findAllScheduleByShowRom(Long id) {
         List<ScheduleByShowroomDTO> scheduleByShowroomDTOS = new ArrayList<>();
@@ -59,6 +73,28 @@ public class ScheduleServiceImpl implements ScheduleService {
                     new ScheduleByShowroomDTO( movie.getTitle(),movie.getDuration(),schedule.getId(),
                             movie.getId(), showRoom.getId(), schedule.getStartTime(), schedule.getEndTime(),showRoom.getSeat_count(), emptySeat, schedule.getPrice())
             );
+        }
+        return  scheduleByShowroomDTOS;
+    }
+
+    @Override
+    public List<ScheduleByShowroomDTO> findAllScheduleByShowRomAndMovie(Long showroomID, Long movieID) {
+        List<ScheduleByShowroomDTO> scheduleByShowroomDTOS = new ArrayList<>();
+        List<Schedule> schedules = scheduleRepository.findAllByShowRoom_Id(showroomID);
+        for (Schedule schedule :
+                schedules ) {
+            Movie movie = schedule.getMovie();
+            if (movie.getId() != movieID) {
+                continue;
+            }else {
+                ShowRoom showRoom = schedule.getShowRoom();
+                List<Seat> seats = showRoom.getSeats();
+                int emptySeat = ticketRepository.countAllByBookingIsNullAndSchedule_Id(schedule.getId());
+                scheduleByShowroomDTOS.add(
+                        new ScheduleByShowroomDTO( movie.getTitle(),movie.getDuration(),schedule.getId(),
+                                movie.getId(), showRoom.getId(), schedule.getStartTime(), schedule.getEndTime(),showRoom.getSeat_count(), emptySeat, schedule.getPrice())
+                );
+            }
         }
         return  scheduleByShowroomDTOS;
     }

@@ -140,8 +140,6 @@ function fillEditForm(btn) {
 
             });
         })
-
-
     });
 
     // hiện dialog xác nhận khi xóa
@@ -159,3 +157,7 @@ function fillEditForm(btn) {
         $("#PHONE").val("");
         $("#ADDRESS").val("");
     }
+    $(function() {
+            console.log("run")
+            $("#Cinema").addClass("btn-dark")
+        })

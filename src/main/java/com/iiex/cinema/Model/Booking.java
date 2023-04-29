@@ -3,6 +3,7 @@ package com.iiex.cinema.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Collection;
 
@@ -20,7 +21,8 @@ public class Booking {
     @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
-    @Column(name = "created_at")
+    @Column(name = "created_at",nullable = false, updatable = false)
+    @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date created_at ;
 

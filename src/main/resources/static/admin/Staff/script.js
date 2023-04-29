@@ -18,6 +18,7 @@
         }, "json");
     }
     $(document).ready(function() {
+          $("#Staff").addClass("btn-dark")
 
         var table = $('#dataTable').DataTable({
             ajax: "/api/staffs",

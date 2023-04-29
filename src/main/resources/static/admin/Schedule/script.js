@@ -18,6 +18,7 @@ $('#addEmployeeModal').on('hidden.bs.modal', function () {
 })
 
 $(document).ready(function () {
+    $("#Schedule").addClass("btn-dark")
 
     function load_cinema() {
         $.get("/api/cinemas", function (data, status) {
@@ -66,10 +67,20 @@ $(document).ready(function () {
             data: 'duration'
         },
         {
-            data: 'startTime'
+            data: 'startTime',
+                        render: function (data, type, row) {
+                let date = moment.utc(data).local();
+                let formattedDate = date.format('HH:mm - DD/MM/YYYY');
+                return formattedDate;
+            }
         },
         {
-            data: 'endTime'
+            data: 'endTime',
+                        render: function (data, type, row) {
+                let date = moment.utc(data).local();
+                let formattedDate = date.format('HH:mm - DD/MM/YYYY');
+                return formattedDate;
+            }
         },
         {
             data: null,
@@ -78,7 +89,12 @@ $(document).ready(function () {
             }
         },
         {
-            data: 'price'
+            data: 'price',
+            render: function (data, type, row) {
+                let price = parseFloat(data);
+                let formattedPrice = price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+                return formattedPrice;
+            }
         },
         {
             data: null,

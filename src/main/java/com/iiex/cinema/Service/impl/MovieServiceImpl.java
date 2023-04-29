@@ -1,15 +1,16 @@
 package com.iiex.cinema.Service.impl;
 
+import com.iiex.cinema.Model.Cinema;
 import com.iiex.cinema.Model.Movie;
+import com.iiex.cinema.Model.Schedule;
+import com.iiex.cinema.Model.ShowRoom;
 import com.iiex.cinema.Repository.MovieRepository;
 import com.iiex.cinema.Service.MovieService;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -48,6 +49,7 @@ public class MovieServiceImpl implements MovieService {
   public List<Movie> getMovieTrailer() {
     return movieRepository.getMovieTrailer();
   }
+
 
   @Override
   public void delete(Long ID) {

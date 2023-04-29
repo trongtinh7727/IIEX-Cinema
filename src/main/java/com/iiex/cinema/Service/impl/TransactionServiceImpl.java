@@ -47,6 +47,11 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public Booking save(Booking booking) {
+        return transactionRepository.save(booking);
+    }
+
+    @Override
     public RevenueMonth getRevenueOfMonth(Date month) {
         return null;
     }

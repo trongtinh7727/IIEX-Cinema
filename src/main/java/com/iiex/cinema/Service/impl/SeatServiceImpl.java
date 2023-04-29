@@ -24,6 +24,12 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
+    public Seat getByShowRoomAndSeatNumber(ShowRoom showRoom, String seatNumber) {
+
+        return seatRepository.findBySeatNumberAndAndShowRoom(seatNumber,showRoom);
+    }
+
+    @Override
     public List<Seat> generateSeat(ShowRoom showRoom) {
         List<Seat> seats = new ArrayList<>();
         for (char j = 'A'; j <= 'H'; j++) {

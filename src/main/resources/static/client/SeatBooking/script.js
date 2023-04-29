@@ -1,0 +1,161 @@
+function drawSeatCols(start, end) {
+        const seatCols = document.createElement('div');
+        seatCols.classList.add('seatcol-big', 'd-flex');
+        for (let j = start; j <= end; j++) {
+            // Create a new seat item column
+            const seatCol = document.createElement('div');
+            seatCol.classList.add('seatcol');
+
+            // Loop through each seat item and create it
+            for (let k = 0; k < 8; k++) {
+                const seatItem = document.createElement('div');
+                seatItem.classList.add('seat-item');
+                seatItem.id = String.fromCharCode(65 + k) + (j);
+                seatCol.appendChild(seatItem);
+            }
+
+            // Create the seat letter for this column
+            const seatLetter = document.createElement('div');
+            seatLetter.classList.add('seat-letter');
+            seatLetter.textContent = j;
+            seatCol.appendChild(seatLetter);
+
+            // Add the seat item column to the seatCols container
+            seatCols.appendChild(seatCol);
+        }
+        return seatCols
+    }
+
+    $(document).ready(function() {
+
+        function dawSingle() {
+            const seatContainer = document.getElementById('bookticket-seat-main-seat-single');
+
+            const letterColL = document.createElement('div');
+            letterColL.classList.add('seatcol');
+            for (let l = 0; l < 8; l++) {
+                const seatLetter = document.createElement('div');
+                seatLetter.classList.add('seat-letter');
+                seatLetter.textContent = String.fromCharCode(65 + l);
+                letterColL.appendChild(seatLetter);
+            }
+
+            seatContainer.appendChild(letterColL)
+            // Define the number of seat rows and columns
+            const numRows = 3;
+            const numCols = 10;
+            // Loop through each row and column to create the seat grid
+            // const seatCols = drawSeatCols(1, 2)
+            seatContainer.appendChild(drawSeatCols(1, 2))
+            seatContainer.appendChild(drawSeatCols(3, 8))
+            seatContainer.appendChild(drawSeatCols(9, 10))
+
+            const letterColR = document.createElement('div');
+            letterColR.classList.add('seatcol');
+            for (let l = 0; l < 8; l++) {
+                const seatLetter = document.createElement('div');
+                seatLetter.classList.add('seat-letter');
+                seatLetter.textContent = String.fromCharCode(65 + l);
+                letterColR.appendChild(seatLetter);
+            }
+            seatContainer.appendChild(letterColR)
+
+        }
+        dawSingle()
+
+        function loadBooked() {
+            var schedule_id = 4;
+            var settings = {
+            "url": "/api/schedules/getbookedseat/4",
+            "method": "GET",
+            "timeout": 0,
+            };
+
+            $.ajax(settings).done(function (data) {
+                console.log(data);
+                data.data.forEach(function(object) {
+                            var seatnumber = object;
+                            $(`#${seatnumber}`).addClass('seat-sold')
+                        });
+            });
+            
+        }
+        loadBooked()
+
+        // 10 cuple | 80 single
+        const seats = [];
+        var regular_quantity = parseInt($('#quantity_regular').text())
+        var couple_quantity = parseInt($('#quantity_couple').text())
+        $("#bookticket-seat-main-seat").find($(".seat-item")).click(function() {
+
+            if ($(this).hasClass("seat-choosing")) {
+
+                if ($(this).hasClass('seat-item-couple')) {
+                    couple_quantity += 1
+                } else {
+                    regular_quantity += 1;
+                }
+                const index = seats.indexOf($(this).attr("id"));
+                if (index > -1) {
+                    seats.splice(index, 1);
+                }
+                console.log($(this).attr("id"));
+                console.log(seats)
+                $(this).removeClass("seat-choosing");
+            } else {
+                flag = true;
+                if ($(this).hasClass('seat-item-couple')) {
+                    if (couple_quantity <= 0) {
+                        alert("Đã chọn đủ số vé đôi!")
+                        flag = false;
+                    }
+                } else {
+                    if (regular_quantity <= 0) {
+                        alert("Đã chọn đủ số vé đơn!")
+                        flag = false;
+                    }
+                }
+
+                if (couple_quantity <= 0 && regular_quantity <= 0) {
+                    alert("Đã chọn đủ số vé! Vui lòng bấm vào 'Tiếp theo' để sang bước tiếp theo")
+                    flag = false;
+                }
+                if ($(this).hasClass('seat-sold')) {
+                    flag = false;
+                }
+                if (flag) {
+                    if ($(this).hasClass('seat-item-couple')) {
+                        couple_quantity -= 1
+                    } else {
+                        regular_quantity -= 1;
+                    }
+                    seats.push($(this).attr("id"));
+                    console.log(seats)
+                    $(this).addClass("seat-choosing");
+                    console.log($(this).attr("id"));
+                }
+            }
+        });
+
+        $('#bookticket-prev').click(
+            function() {
+                $(location).attr('href', '/ticketbooking');
+            }
+        )
+        $('#bookticket-next').click(
+            function() {
+                $.ajax({
+                    url: '/api/transactions/seatbooking',
+                    type: 'POST',
+                    data: JSON.stringify({data: seats}),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+                    }
+                });
+                    
+                $(location).attr('href', '/combobooking');
+            }
+        )
+    })

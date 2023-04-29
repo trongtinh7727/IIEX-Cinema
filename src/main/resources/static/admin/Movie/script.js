@@ -22,6 +22,7 @@ function fillEditForm(btn) {
     }, "json");
 }
 $(document).ready(function() {
+    $("#Movie").addClass("btn-dark")
 
     var table = $('#dataTable').DataTable({
         ajax: "/api/movies",

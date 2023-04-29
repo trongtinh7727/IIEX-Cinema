@@ -31,6 +31,8 @@ $('#addEmployeeModal').on('hidden.bs.modal', function() {
     }
 
     $(document).ready(function() {
+        $("#ShowRoom").addClass("btn-dark")
+
         function load_cinema() {
             $.get("/api/cinemas", function(data, status) {
 

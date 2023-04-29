@@ -47,7 +47,7 @@ public class  ComboFoodController {
 
             // Save the image file to the server
             String imageName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
-            Path imagePath = Paths.get("src/main/resources/static/assets/images/foodcombos", imageName);
+            Path imagePath = Paths.get("target/classes/static/assets/images/foodcombos", imageName);
             System.out.println(imagePath.toString());
             Files.copy(imageFile.getInputStream(), imagePath);
             comboFood.setImages(imageName);
