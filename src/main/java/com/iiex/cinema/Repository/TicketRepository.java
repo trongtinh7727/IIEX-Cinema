@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
-    int countAllByBookingIsNullAndSchedule_Id(int ID);
+    int countAllByBookingIsNullAndSchedule_Id(Long ID);
 
     Ticket findByScheduleAndSeat(Schedule schedule, Seat seat);
 

@@ -1,23 +1,4 @@
-<!-- Bootstrap 5.3 -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-
-<!-- JQuery -->
-<script language="JavaScript" type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-
-<!-- JQuery -->
-<script language="JavaScript" type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
-
-<!-- Swiper -->
-<script language="JavaScript" type="text/javascript" src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-<!-- Datatables -->
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-<!-- Datatable Bootstrap -->
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-
-<script>
-    $(document).ready(function() {
+$(document).ready(function() {
         const swiper = new Swiper("#toppartSwiper", {
             effect: "coverflow",
             grabCursor: true,
@@ -109,25 +90,27 @@
             
             // Make the AJAX call to get transaction details
             $.ajax({
-                url: './?api/transaction/getbyid&booking_id=' + bookingId,
+                url: '/api/transactions/getbyid/' + bookingId,
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
                     // Fill the modal content with the transaction details
                     // var modalBody = $('#historyItemModal').find('.modal-body');
-                    console.log(data.data)
-                    $('#TITLE').text(data.data[0]['TITLE']);
-                    $('#ySTARTTIME').text(data.data[0]['STARTTIME']);
-                    $('#tSTARTTIME').text(data.data[0]['STARTTIME']);
-                    $('#CINEMA').text(data.data[0]['CINEMA']);
-                    $('#ADDRESS').text(data.data[0]['ADDRESS']);
-                    $('#SHOWROOMNUM').text(data.data[0]['SHOWROOMNUM']);
-                    $('#SEATS').text(data.data[0]['Seats']);
-                    $('#yCREATED_AT').text(data.data[0]['CREATED_AT']);
-                    $('#tCREATED_AT').text(data.data[0]['CREATED_AT']);
-                    $('#TICKET_PRICE').text(data.data[0]['TICKET_PRICE']);
-                    $('#FOOD_PRICE').text(data.data[0]['FOOD_PRICE']);
-                    $('#Total').text(data.data[0]['Total']);
+                    console.log(data)
+                    $('#TITLE').text(data['title']);
+                    var startTime = moment(data['startime']).format('HH:mm - DD/MM/YYYY');
+                    $('#ySTARTTIME').text(startTime);
+     
+                    $('#CINEMA').text(data['cinema']);
+                    $('#ADDRESS').text(data['address']);
+                    $('#SHOWROOMNUM').text(data['showRoom']);
+                    $('#SEATS').text(data['seats']);
+                    var created_at = moment(data['created_at']).format('HH:mm - DD/MM/YYYY');
+                    $('#yCREATED_AT').text(created_at);
+                
+                    $('#TICKET_PRICE').text(data['ticketPrice']);
+                    $('#FOOD_PRICE').text(data['foodPrice']);
+                    $('#Total').text(data['totalPrice']);
                 },
                 error: function() {
                     alert('Error getting transaction details');
@@ -135,4 +118,3 @@
             });
         });
     });
-</script>

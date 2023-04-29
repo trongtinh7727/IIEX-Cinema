@@ -14,7 +14,7 @@ import java.util.Collection;
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+    private long Id;
 
     private  float price;
 

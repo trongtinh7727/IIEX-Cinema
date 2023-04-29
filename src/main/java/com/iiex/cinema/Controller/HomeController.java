@@ -1,6 +1,8 @@
 package com.iiex.cinema.Controller;
 
 import com.iiex.cinema.DTO.FoodDTO;
+import com.iiex.cinema.DTO.ScheduleTodayDTO;
+import com.iiex.cinema.DTO.TransactionDTO;
 import com.iiex.cinema.Model.*;
 import com.iiex.cinema.Service.*;
 import com.iiex.cinema.Service.impl.UserServiceImpl;
@@ -182,5 +184,46 @@ public class HomeController {
 
     return "Client/index";
   }
+
+  @GetMapping("/showtime")
+  public String showTime( Model model) {
+    model.addAttribute("fragmentName", "ShowTime");
+    String username = userService.getCurrentUsername();
+    model.addAttribute("username", username);
+    List<Movie> ongoing = movieService.findAllIsOnGoing();
+    model.addAttribute("ongoing", ongoing);
+
+    List<ScheduleTodayDTO> schedulesToday = scheduleService.getScheduleToday();
+
+    model.addAttribute("schedules", schedulesToday);
+
+    return "Client/index";
+  }
+
+  @GetMapping("/profile")
+  public String proFile( Model model) {
+    model.addAttribute("fragmentName", "Profile");
+    String username = userService.getCurrentUsername();
+    model.addAttribute("username", username);
+    User user = userService.findByEmail(username);
+
+    model.addAttribute("user", user);
+    return "Client/Profile/index";
+  }
+  @GetMapping("/bookinghistory")
+  public String bookinghistory( Model model) {
+    model.addAttribute("fragmentName", "BookingHistory");
+    String username = userService.getCurrentUsername();
+    model.addAttribute("username", username);
+    User user = userService.findByEmail(username);
+    List<TransactionDTO> transactionDTOS = transactionService.getAllTransactionByUser(user);
+
+    model.addAttribute("transactions", transactionDTOS);
+
+
+    return "Client/Profile/index";
+  }
+
+
 
 }

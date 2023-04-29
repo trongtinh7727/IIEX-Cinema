@@ -1,0 +1,36 @@
+<div th:fragment="Content" class="container">
+    <div id="profile-main" class="my-5 p-3 text-white rounded-4">
+        <h2 class="text-uppercase text-yellow text-center">Thông tin tài khoản</h2>
+        <form action="/updateprofile" method="post">
+            <input type="hidden" name="ID" value="">
+            <table class="mx-auto">
+                <!-- Username -->
+                <tr style="height: 44px;">
+                    <td class="text-end fw-medium">Tên đăng nhập:</td>
+                    <td><input name="profile-username" th:value="${user.email}" type="text"
+                            class="mx-3 rounded-3 text-white w-100" disabled></td>
+                </tr>
+                <!-- Name -->
+                <tr style="height: 44px;">
+                    <td class="text-end fw-medium">Họ và tên:</td>
+                    <td><input name="name" th:value="${user.name}" type="text" class="mx-3 rounded-3 text-white w-100">
+                    </td>
+                </tr>
+                <!-- Address -->
+                <tr style="height: 44px;">
+                    <td class="text-end fw-medium">Địa chỉ:</td>
+                    <td><input name="ADDRESS" th:value="${user.address}" type="text"
+                            class="mx-3 rounded-3 text-white w-100"></td>
+                </tr>
+                <tr style="height: 44px;">
+                    <td></td>
+                    <td class="text-end">
+                        <input type="submit" class="mx-3 px-3 rounded-3 bg-yellow hover-bg-green border-0 fw-medium"
+                            value="Xác nhận">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+</div>

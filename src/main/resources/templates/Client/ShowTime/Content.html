@@ -1,4 +1,4 @@
-<div id="showtime" class="mb-5 container-lg">
+<div th:fragment="Content" id="showtime" class="mb-5 container-lg">
     <!-- Separator -->
     <div id="showtime-separator" class="my-4">
         <div class="container position-relative">
@@ -12,24 +12,26 @@
             </div>
         </div>
     </div>
-    <?php foreach ($showtimes as $showtime) { ?>
+    <th:block th:each="showtime : ${schedules}">
         <div class="showtime-item my-5 row">
             <!-- Left Side Info -->
             <div class="showtime-item-info row col-xl-5 rounded-4 mx-auto">
                 <!-- DATAFILL POSTER -->
                 <div class="showtime-item-info-poster col-12 col-lg-6 d-flex align-items-center">
-                    <img src="<?php echo $showtime['POSTER'] ?>" alt="Movie Poster" style="height: 260px; width: 230px;">
+                    <img th:src="${showtime.moviePoster}" alt="Movie Poster" style="height: 260px; width: 230px;">
                 </div>
                 <!-- Content -->
                 <div class="showtime-item-info-content text-white col-12 col-lg-6 my-3">
                     <!-- DATAFILL MOVIE TITLE -->
                     <h4 class="showtime-item-info-content-title text-capitalize">
-                        <a href="./?moviedetail&id=<?php echo $showtime['MID'] ?>">
-                            <?php echo $showtime['TITLE'] ?>
+                        <a th:href="@{/moviedetail/{id}(id = ${showtime.movieId})}">
+                            [[${showtime.movieTitle}]]
                         </a>
                     </h4>
                     <!-- DATAFILL MOVIE DESCRIPTION -->
-                    <p class="showtime-item-info-content-content"><?php echo $showtime['STORY'] ?> </p>
+                    <p class="showtime-item-info-content-content">
+                        [[${showtime.movieStory}]]
+                    </p>
                     <!-- DATAFILL RATING -->
                     <span class="showtime-item-info-content-rating text-yellow">
                         <i class="fa fa-star" aria-hidden="true"></i>
@@ -48,11 +50,11 @@
                 <!-- Date -->
                 <div class="showtime-item-time-date d-flex">
                     <!-- DATAFILL DATE -->
-                    <?php $day = explode('-', $showtime['DAY']) ?>
+
                     <div class="showtime-item-time-date-date bg-yellow d-flex align-items-center">
                         <div class="ms-2">
-                            <h3><?php echo $day[2] . '/' . $day[1] ?></h3>
-                            <h3><?php echo $day[0] ?></h3>
+                            <h3 th:text="${#dates.format(showtime.day, 'dd/MM')}"></h3>
+                            <h3 th:text="${#dates.format(showtime.day, 'yyyy')}"></h3>
                         </div>
                     </div>
                 </div>
@@ -66,18 +68,23 @@
                         <!-- Time slot pick -->
                         <div class="showtime-item-time-tagntime-time d-flex flex-wrap">
                             <!-- DATAFILL -->
-                            <?php foreach ($showtime['TIME'] as $timeSlot) { ?>
+                            <th:block th:each="time : ${showtime.startTimes}">
                                 <div class="showtime-item-time-tagntime-time-slot mx-2 my-2 hover-bg-green px-1">
-                                    <a href="./?moviedetail&id=<?php echo $showtime['MID'] ?>" class="showtime-item-time-tagntime-time-slot-inner text-center text-white text-decoration-none">
-                                        <span class="fs-4 fw-medium"><?php echo explode(':', $timeSlot)[0] ?> : <?php echo explode(':', $timeSlot)[1] ?></span>
+                                    <a th:href="@{/moviedetail/{id}(id = ${showtime.movieId})}"
+                                        class="showtime-item-time-tagntime-time-slot-inner text-center text-white text-decoration-none">
+                                        <span class="fs-4 fw-medium">
+
+                                            [[${#dates.format(time, 'HH:mm')}]]
+
+                                        </span>
                                     </a>
                                 </div>
-                            <?php } ?>
+                            </th:block>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    <?php
-    } ?>
+    </th:block>
+
 </div>

@@ -2,6 +2,7 @@ package com.iiex.cinema.Service.impl;
 
 import com.iiex.cinema.DTO.ScheduleByShowroomDTO;
 import com.iiex.cinema.DTO.ScheduleDTO;
+import com.iiex.cinema.DTO.ScheduleTodayDTO;
 import com.iiex.cinema.Model.*;
 import com.iiex.cinema.Repository.ScheduleRepository;
 import com.iiex.cinema.Repository.TicketRepository;
@@ -9,8 +10,9 @@ import com.iiex.cinema.Service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
@@ -56,6 +58,35 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
         }
         return seats;
+    }
+
+    @Override
+    public List<ScheduleTodayDTO> getScheduleToday() {
+        Date currentDate = new Date();
+        List<Schedule> schedules = scheduleRepository.findScheduleByDay(currentDate);
+        Map<Date, Map<Long, ScheduleTodayDTO>> scheduleMap = schedules.stream()
+                .collect(Collectors.groupingBy(schedule -> schedule.getStartTime(),
+                        Collectors.groupingBy(schedule -> schedule.getMovie().getId(),
+                                Collectors.mapping(schedule -> new ScheduleTodayDTO(
+                                        schedule.getId(),
+                                        schedule.getMovie().getId(),
+                                        schedule.getMovie().getTitle(),
+                                        schedule.getMovie().getPoster(),
+                                        schedule.getMovie().getStory(),
+                                        Collections.singletonList(schedule.getStartTime()),
+                                        schedule.getStartTime()
+                                ), Collectors.reducing(null, (a, b) -> {
+                                    if (a == null) {
+                                        return b;
+                                    }
+                                    a.getStartTimes().addAll(b.getStartTimes());
+                                    return a;
+                                }))
+                        )));
+        List<ScheduleTodayDTO> schedulesToday = new ArrayList<>();
+        scheduleMap.values().forEach(map -> map.values().forEach(schedulesToday::add));
+
+        return schedulesToday;
     }
 
     //    admin schedule

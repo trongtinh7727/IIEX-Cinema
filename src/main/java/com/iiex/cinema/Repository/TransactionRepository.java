@@ -14,5 +14,5 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Booking,Long> {
-
+        Booking findById(long  id);
 }

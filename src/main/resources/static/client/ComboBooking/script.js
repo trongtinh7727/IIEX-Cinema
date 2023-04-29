@@ -7,7 +7,7 @@ $(document).ready(function() {
             if (index > -1) {
                 foods.splice(index, 1);
             }
-
+ 
             foods.push(id)
             console.log(foods)
 

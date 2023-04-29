@@ -1,0 +1,165 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.text-yellow {
+    color: #FFBA08 !important;
+}
+
+.bg-yellow {
+    background-color: #FFBA08 !important;
+}
+
+.text-green {
+    color: #CCF381 !important;
+}
+
+.bg-green {
+    background-color: #CCF381 !important;
+}
+
+.hover-green:hover {
+    transition: 0.5s;
+    cursor: pointer !important;
+    color: #CCF381 !important;
+}
+
+.hover-bg-green:hover {
+    color: #000000 !important;
+    transition: 0.5s !important;
+    cursor: pointer !important;
+    background-color: #CCF381 !important;
+}
+
+.hover-yellow:hover {
+    transition: 0.5s;
+    cursor: pointer !important;
+    color: #FFBA08 !important;
+}
+
+.hover-bg-yellow:hover {
+    color: #000000 !important;
+    transition: 0.5s !important;
+    cursor: pointer !important;
+    background-color: #FFBA08 !important;
+}
+
+.custom-active::after {
+    content: "";
+    position: absolute;
+    background-color: #FFBA08;
+    height: 1px;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+}
+
+#wrapper {
+    min-height: 100vh;
+    background-color: #000218;
+}
+
+/* ============================= */
+
+/* Top part*/
+#toppart {
+    margin: 0;
+    background: url(../assets/img/homepage/movie-area.png);
+    background-size: cover;
+}
+
+/* Swiper */
+.swiper-slide {
+    background-color: rgba(219, 227, 255, 0.25);
+    width: 35%;
+}
+
+.swiper-slide-inner-left img {
+    top: -40px;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+}
+
+#swiper-slide-inner-movie-trailer-modal iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+}
+
+/* Swiper Nagivation Button */
+.swiper-button-prev,
+.swiper-button-next {
+    width: 44px;
+}
+
+
+/* Showtime toggler */
+#showtime-separator .container::after {
+    content: "";
+    position: absolute;
+    background-color: #ffffff;
+    height: 1px;
+    width: 100%;
+    bottom: -10px;
+}
+
+/* Showtime */
+.showtime-item-info {
+    background: url(../assets/img/galaxy-bg.png) no-repeat;
+    background-size: cover;
+}
+
+.showtime-item-time-date-date {
+    z-index: 2;
+    width: 120px;
+    height: 120px;
+    clip-path: polygon(0 0, 100% 0, 70% 100%, 0% 100%);
+}
+
+.showtime-item-time-tagntime {
+    margin-left: -50px;
+    padding-left: 50px;
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.showtime-item-time-tagntime-time-slot {
+    background-color: #55BDCB;
+}
+
+.showtime-item-time-tagntime-time-slot-inner span:hover {
+    transition: 0.5s;
+    color: #000000;
+}
+
+@media screen and (max-width: 992px) {
+    .custom-active::after {
+        content: "";
+        position: absolute;
+        background-color: #FFBA08;
+        height: 1px;
+        width: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 0;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .swiper-slide {
+        background-color: transparent;
+    }
+
+    .swiper-slide-inner-right {
+        display: none;
+    }
+
+    .swiper-slide-inner-left {
+        height: 300px;
+    }
+}
