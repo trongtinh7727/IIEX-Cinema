@@ -1,0 +1,44 @@
+<div th:fragment="table" id="employee_manager" class="card mx-auto my-4 shadow rounded-4">
+
+    <!-- Title + Button -->
+    <div class="card-header bg-white rounded-top-4">
+        <span class="fs-4">Đổi mật khẩu</span>
+        <br>
+
+    </div>
+    <!-- Main -->
+    <div class="container">
+        <!-- Table -->
+        <form id="change-password-form" action="/api/users/change-password" method="post">
+            <input type="hidden" name="tb" value="Staff">
+            <table class="mx-auto">
+                <!-- Old password -->
+                <tr style="height: 44px;">
+                    <td class="text-end fw-medium">Mật khẩu cũ:</td>
+                    <td><input id="password" name="password" type="password"
+                            class="mx-3 rounded-3 text-black w-100 required"></td>
+                </tr>
+                <!-- New password -->
+                <tr style="height: 44px;">
+                    <td class="text-end fw-medium">Mật khẩu mới:</td>
+                    <td><input id="newpassword" name="newpassword" type="password"
+                            class="mx-3 rounded-3 text-black w-100 required"></td>
+                </tr>
+                <!-- Confirm password -->
+                <tr style="height: 44px;">
+                    <td class="text-end fw-medium">Xác nhận mật khẩu:</td>
+                    <td><input id="confirmpassword" name="confirmpassword" type="password"
+                            class="mx-3 rounded-3 text-black w-100 required"></td>
+                </tr>
+                <!-- Submit -->
+                <tr style="height: 44px;">
+                    <td></td>
+                    <td class="text-end">
+                        <input type="submit" class="mx-3 px-3 rounded-3 bg-yellow hover-bg-green border-0 fw-medium"
+                            value="Xác nhận">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>

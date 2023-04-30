@@ -1,4 +1,54 @@
+
+
 $(document).ready(function() {
+  $('#change-password-form').validate({
+    rules: {
+        // validation rules here
+    },
+    messages: {
+        // error messages here
+    },
+    errorElement: 'small',
+    errorClass: 'text-danger',
+    highlight: function(element, errorClass, validClass) {
+        $(element).addClass(errorClass).removeClass(validClass);
+    },
+    unhighlight: function(element, errorClass, validClass) {
+        $(element).removeClass(errorClass).addClass(validClass);
+    },
+    submitHandler: function(form) {
+        // submit form here
+        var url = $(form).attr('action');
+        var data = {
+        currentPassword: $('#password').val(),
+        newPassword:  $('#newpassword').val()
+        };
+
+        $.ajax({
+        type: 'POST',
+        url: url,
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function(response) {
+            // handle success response
+            console.log(response);
+            $("#msg-success").css('display', 'flex').text(response)
+            $("#msg-failed").css('display', 'none')
+        },
+        error: function(xhr) {
+            // handle error response
+            console.log(xhr.responseText);
+            $("#msg-failed").css('display', 'flex').text("Có lỗi xảy ra! Vui lòng thử lại sau: " + xhr.responseText)
+            $("#msg-success").css('display', 'none')
+        }
+        });
+    },
+    invalidHandler: function(form, validator) {
+        // prevent form submission on validation failure
+        return false;
+    }
+    });
+
         const swiper = new Swiper("#toppartSwiper", {
             effect: "coverflow",
             grabCursor: true,
@@ -25,64 +75,9 @@ $(document).ready(function() {
         $("#swiper-slide-inner-movie-trailer-modal").on("hidden.bs.modal", function() {
             $('.swiper-trailer-video').attr('src', $('.trailer-video').attr('src'));
         });
-    })
-    $(document).ready(function() {
+
         $('#bookingHistoryDataTable').DataTable();
 
-        $('form').submit(function(event) {
-            event.preventDefault();
-
-            var firstName = $('input[name="FIRSTNAME"]').val().trim();
-            var lastName = $('input[name="LASTNAME"]').val().trim();
-            var birthday = $('input[name="BIRTHDAY"]').val().trim();
-            var address = $('input[name="ADDRESS"]').val().trim();
-            var phone = $('input[name="PHONE"]').val().trim();
-
-            // Perform validation checks
-            var isValid = true;
-
-            if (firstName.length == 0) {
-                isValid = false;
-                alert('Họ không được để trống');
-            }
-
-            if (lastName.length == 0) {
-                isValid = false;
-                alert('Tên không được để trống');
-            }
-
-            if (birthday.length == 0) {
-                isValid = false;
-                alert('Ngày sinh không được để trống');
-            }
-
-            if (address.length == 0) {
-                isValid = false;
-                alert('Địa chỉ không được để trống');
-            }
-
-            if (phone.length == 0) {
-                isValid = false;
-                alert('Số điện thoại không được để trống');
-            }
-            var phoneRegex = /^\d{10}$/;
-
-            if (!phoneRegex.test(phone)) {
-                isValid = false;
-                alert('Số điện thoại không đúng');
-            }
-
-            if (!isValid) {
-                return false;
-            }
-
-            // If all validation checks pass, submit the form
-            this.submit();
-        });
-    });
-
-
-    $(document).ready(function() {
         // When the modal is shown
         $('#historyItemModal').on('show.bs.modal', function (e) {
             // Get the booking ID from the trigger element

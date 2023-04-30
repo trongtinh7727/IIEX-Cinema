@@ -33,7 +33,7 @@ public class SpringSecurity {
       .authorizeHttpRequests(authorize ->
         authorize
           .requestMatchers(
-            "/register/**",
+            "api/users/register",
             "/assets/**",
             "/js/**",
             "/img/**",

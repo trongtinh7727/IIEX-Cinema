@@ -20,10 +20,20 @@
                     data: "title"
                 },
                 {
-                    data: "startime"
+                    data: "startime",
+                    render: function (data, type, row) {
+                        let date = moment.utc(data).local();
+                        let formattedDate = date.format('HH:mm - DD/MM/YYYY');
+                        return formattedDate;
+                    }
                 },
                 {
-                    data: "created_at"
+                    data: "created_at",
+                    render: function (data, type, row) {
+                        let date = moment.utc(data).local();
+                        let formattedDate = date.format('HH:mm - DD/MM/YYYY');
+                        return formattedDate;
+                    }
                 },
                 {
                     data: "seats"

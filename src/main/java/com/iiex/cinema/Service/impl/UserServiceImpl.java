@@ -95,6 +95,17 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
+    @Override
+    public boolean isPasswordValid(User user, String password) {
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Override
+    public void changePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
     private UserDto convertEntityToDto(User user){
         UserDto userDto = new UserDto();
         userDto.setName(user.getName());

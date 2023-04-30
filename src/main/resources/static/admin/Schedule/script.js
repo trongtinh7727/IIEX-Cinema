@@ -68,7 +68,7 @@ $(document).ready(function () {
         },
         {
             data: 'startTime',
-                        render: function (data, type, row) {
+                render: function (data, type, row) {
                 let date = moment.utc(data).local();
                 let formattedDate = date.format('HH:mm - DD/MM/YYYY');
                 return formattedDate;

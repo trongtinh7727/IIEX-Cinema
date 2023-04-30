@@ -1,12 +1,16 @@
 package com.iiex.cinema.Controller;
 
 import com.iiex.cinema.Api.CustomResponse;
+import com.iiex.cinema.DTO.ChangePasswordRequest;
 import com.iiex.cinema.DTO.UserDto;
 import com.iiex.cinema.Model.User;
 import com.iiex.cinema.Repository.RoleRepository;
 import com.iiex.cinema.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +48,18 @@ public class UserController {
         CustomResponse<User> response = new CustomResponse(true,"Thêm thành công");
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/register")
+    ResponseEntity<CustomResponse> userRegister(@RequestBody UserDto newUser) {
+        User isvalid = userService.findByEmail(newUser.getEmail());
+        if (isvalid != null) {
+            CustomResponse<User> response = new CustomResponse(false,"Tên đăng nhập đã tồn tại!");
+            return ResponseEntity.ok(response);
+        }
+        userService.saveUser(newUser,"USER");
+        CustomResponse<User> response = new CustomResponse(true,"Thêm thành công");
+        return ResponseEntity.ok(response);
+    }
     @DeleteMapping("/{id}")
     ResponseEntity<CustomResponse> delete(@PathVariable Long id){
         userService.delete(id);
@@ -62,6 +78,22 @@ public class UserController {
         list.add(userUpdated);
         CustomResponse<User> response = new CustomResponse(true,list,"Sửa thành công");
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        User user = userService.findByEmail(username);
+
+        if (!userService.isPasswordValid(user, changePasswordRequest.getCurrentPassword())) {
+            return ResponseEntity.badRequest().body("Current password is incorrect");
+        }
+
+        userService.changePassword(user, changePasswordRequest.getNewPassword());
+
+        return ResponseEntity.ok("Password changed successfully");
     }
     
 }

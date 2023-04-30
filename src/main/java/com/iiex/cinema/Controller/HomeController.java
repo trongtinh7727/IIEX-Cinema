@@ -216,6 +216,7 @@ public class HomeController {
     String username = userService.getCurrentUsername();
     model.addAttribute("username", username);
     User user = userService.findByEmail(username);
+
     List<TransactionDTO> transactionDTOS = transactionService.getAllTransactionByUser(user);
 
     model.addAttribute("transactions", transactionDTOS);
@@ -224,6 +225,16 @@ public class HomeController {
     return "Client/Profile/index";
   }
 
+  @GetMapping("/changepassword")
+  public String changePass( Model model) {
+    model.addAttribute("fragmentName", "Changepass");
+    String username = userService.getCurrentUsername();
+    model.addAttribute("username", username);
+    User user = userService.findByEmail(username);
 
+
+
+    return "Client/Profile/index";
+  }
 
 }

@@ -15,6 +15,12 @@ public class AdminController {
     return "Admin/dashboard";
   }
 
+  @GetMapping("/changepassword")
+  public String changePass(Model model) {
+    model.addAttribute("fragmentName", "ChangePass");
+    return "Admin/dashboard";
+  }
+
   @GetMapping("/staff")
   public String staffManager(Model model) {
     model.addAttribute("fragmentName", "Staff");
